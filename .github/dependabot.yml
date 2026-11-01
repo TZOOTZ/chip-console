@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Una sola PR al mes por ecosistema, con el CI como filtro. Las versiones mayores (Vite, TypeScript,
+  # Tailwind…) se hacen a mano y a conciencia: cambian el build o la salida.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      menores:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: '*'
+        update-types: [version-update:semver-major]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      acciones:
+        patterns: ['*']

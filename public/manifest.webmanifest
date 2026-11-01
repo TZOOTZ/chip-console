@@ -1,0 +1,19 @@
+{
+  "name": "TZOOTZ RESEARCH · Chip Console",
+  "short_name": "Chip Console",
+  "description": "Estudio de chiptune YM2612 + SN76489 en el navegador: genera, edita y exporta WAV, MIDI y VGM.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#04070a",
+  "theme_color": "#04070a",
+  "categories": ["music", "productivity"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

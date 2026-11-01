@@ -1,0 +1,12 @@
+{
+  // TZOOTZ RESEARCH · Chip Console — proyecto propio en Cloudflare Workers (Static Assets)
+  // Sin script de Worker: el estudio es 100 % cliente (emulación de chips en AudioWorklet).
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "tz-megadrive",
+  "compatibility_date": "2026-10-11",
+  "assets": {
+    "directory": "./dist",
+    // navegación a rutas desconocidas → index.html (la app usa #hash, pero así nunca hay 404 en enlaces)
+    "not_found_handling": "single-page-application"
+  }
+}

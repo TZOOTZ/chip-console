@@ -1,0 +1,16 @@
+# Finales de línea fijos (LF) en todos los sistemas: los tests comparan bytes.
+* text=auto eol=lf
+
+# Binarios: nunca se tocan
+*.bin binary
+*.xgc binary
+*.xgm binary
+*.vgm binary
+*.vgz binary
+*.wav binary
+*.mp3 binary
+*.mid binary
+*.png binary
+*.ico binary
+*.woff binary
+*.woff2 binary
