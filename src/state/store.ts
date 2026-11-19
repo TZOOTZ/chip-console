@@ -6,7 +6,7 @@ import type { SoundModel } from '../core/mixer'
 import { createEmptySong } from '../music/presets'
 import { getPattern, type Note, type Song } from '../music/song'
 
-export type PanelId = 'inst' | 'compose' | 'song'
+export type PanelId = 'inst' | 'compose' | 'res' | 'song'
 /** dónde se acopla el inspector: automático según la pantalla, a la derecha o abajo */
 export type DockMode = 'auto' | 'right' | 'bottom'
 

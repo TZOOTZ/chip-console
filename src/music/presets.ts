@@ -307,6 +307,30 @@ export const FM_PRESETS: FmPatch[] = [
     [op(1, 22, 31, 0, 0, 0, 6), op(7, 30, 31, 0, 0, 0, 6, 3), op(1, 26, 31, 0, 0, 0, 6), op(1, 6, 28, 0, 0, 0, 6)],
     { vib: { delay: 0, rate: 13, depth: 30 } },
   ),
+  // 37 — metales, clave y oboe para las piezas de juego (fanfarria, maestoso, danzas barrocas)
+  fm(
+    'TROMPETA',
+    4,
+    7,
+    [op(1, 26, 15, 4, 4, 0, 8), op(1, 4, 17, 2, 2, 0, 8, 1), op(1, 20, 14, 4, 3, 0, 8), op(1, 10, 17, 2, 2, 0, 8, 5)],
+    { vib: { delay: 24, rate: 5.6, depth: 12 }, velMod: 12 },
+  ),
+  fm(
+    'TROMPA',
+    4,
+    6,
+    [op(1, 28, 15, 3, 4, 0, 7), op(1, 14, 17, 1, 2, 0, 7), op(1, 44, 14, 3, 4, 0, 7), op(1, 14, 17, 1, 2, 0, 7, 3)],
+    { vib: { delay: 30, rate: 5, depth: 8 }, velMod: 10 },
+  ),
+  fm('TUBA', 4, 5, [op(1, 22, 17, 3, 4, 0, 8), op(1, 3, 20, 1, 2, 0, 8), op(1, 26, 17, 3, 4, 0, 8), op(1, 12, 20, 1, 2, 0, 8, 2)], { velMod: 10 }),
+  fm('CLAVE', 4, 6, [op(1, 22, 31, 11, 15, 0, 10, 0, 1), op(1, 6, 31, 8, 15, 0, 9, 0, 1), op(1, 32, 31, 12, 15, 0, 10, 0, 1), op(2, 28, 31, 9, 15, 0, 9, 3, 1)]),
+  fm(
+    'OBOE',
+    4,
+    7,
+    [op(1, 24, 19, 2, 2, 0, 8), op(1, 14, 18, 1, 1, 0, 8), op(1, 20, 19, 2, 2, 0, 8), op(2, 4, 18, 1, 1, 0, 8, 2)],
+    { vib: { delay: 20, rate: 5.4, depth: 10 } },
+  ),
 ]
 
 const psg = (name: string, vol: number, a: number, d: number, s: number, r: number, extra: Partial<PsgInst> = {}): PsgInst => ({

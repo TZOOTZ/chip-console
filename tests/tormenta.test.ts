@@ -80,7 +80,7 @@ const voice = (kind: DrumVoice['kind'], pitch: number, decay: number, tone: numb
 
 describe('cuerdas de arco', () => {
   it('van al final del banco, detrás del jazz, sin mover nada de lo anterior', () => {
-    expect(FM_PRESETS.slice(29).map((p) => p.name)).toEqual(['VIOLIN', 'VIOLINS', 'PIZZICATO', 'SPICCATO', 'PONTICELLO', 'CELLO', 'RAYO', 'PARARRAYOS'])
+    expect(FM_PRESETS.slice(29, 37).map((p) => p.name)).toEqual(['VIOLIN', 'VIOLINS', 'PIZZICATO', 'SPICCATO', 'PONTICELLO', 'CELLO', 'RAYO', 'PARARRAYOS'])
     expect(fmIndex('VIBES')).toBe(28)
   })
 

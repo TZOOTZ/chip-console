@@ -15,6 +15,8 @@ oyes es exactamente lo que se exporta al VGM.
 1. Abre la app y pulsa para encender.
 2. **COMPONER → GENERAR TEMA** (estilo + tónica; *OTRO* crea una canción nueva con otra semilla).
    Estilos: **COSMIC DISCO**, **TECHNO MINIMAL**, **DARK**, **JAZZ FUSION**, **JAZZ SWING**, **TORMENTA**, TZOOTZ ERA, aventura, jefe final y house 1992.
+   **RECURSOS → PIEZAS DE JUEGO** crea una **fanfarria**, un **maestoso**, una **bourrée**, una **giga**, una **zarabanda** o un
+   **agitato**; **RECURSOS → FIGURAS** aplica figuras (secuencia, retardo, mordente, tríada, legato…) a la selección.
    ¿Prefieres empezar de cero? **NUEVO** (cabecera, o en la propia pantalla de arranque) crea un tema
    en blanco con el título, tempo, compás, tono y sonidos que elijas.
 3. **Espacio** reproduce desde el patrón seleccionado, **Enter** desde el inicio.
@@ -28,7 +30,7 @@ Pulsa **?** dentro de la app para ver todos los atajos.
 
 ```
 ┌─ logo · transporte · LCD (posición, BPM, compás, tono, título) · deshacer · ⚙ · nuevo · compartir · exportar ─┐
-│ CANALES  │ PATRONES + ORDEN (línea de tiempo)         │ COMPONER · INSTRUMENTO · CANCIÓN │
+│ CANALES  │ PATRONES + ORDEN (línea de tiempo)         │ COMPONER · RECURSOS · INSTRUMENTO · CANCIÓN │
 │ 10 voces │ piano roll, con toda la altura             │ (inspector)                      │
 ├──────────┴─────────────────────────────────────────────┴──────────────────────────────────┤
 │ pista activa · octava │ teclado en pantalla (3 octavas) / pads        │ osciloscopio       │
@@ -70,9 +72,10 @@ exportado de Inkscape se conserva en [`docs/brand/logo-original.svg`](docs/brand
 |---|---|
 | **Sonido** | Emulación de YM2612 (8 algoritmos, envolventes AR/D1R/SL/D2R/RR con KS, DT, MUL, TL, feedback, LFO AM/PM, DAC, pan) y SN76489 (tonos, ruido blanco/periódico, atenuación de 2 dB) en un **AudioWorklet** con tiempo exacto a la muestra. Dos caracteres de sonido (**⚙ → SONIDO**): **MODEL 1** —DAC discreto de 9 bits con su escalón en el cruce por cero y el paso-bajo de la placa— o **LIMPIO**. El PSG va al nivel que tiene en la consola y sin aliasing. |
 | **Composición rápida** | Generador de temas en 10 estilos con semilla (ver más abajo); rellenar pista (bajo, acordes, arpegio, melodía, batería, percusión) en el lenguaje del estilo elegido; variar pista; progresiones y acordes diatónicos; bloqueo de escala. |
+| **Recursos** | **Piezas de juego** con su compás, su tempo y su forma: fanfarria (cuatro compases que no se repiten), maestoso (entrada con redoble y tema de dos frases), bourrée, giga en 6/8 y zarabanda en forma binaria con la repetición ornamentada, y agitato. **Figuras** sobre la selección: gradatio, anáfora, secuencia armónica, ostinato, retardo, melisma, mordente, unísono, tríada, cuatríada, cluster, legato, staccato y rubato. |
 | **Edición** | Piano roll en canvas (selección múltiple, copiar/pegar/duplicar, cuantizar, velocidad, notas fantasma), patrones + orden con bucle, 10 canales con mute/solo/volumen/pan, deshacer/rehacer, autoguardado, biblioteca local. |
 | **Expresión** | **Ligaduras y portamento**: una nota ligada (`LIGAR`, tecla B) no vuelve a atacar y, con el `GLIDE` de la pista, el tono se desliza hasta ella. **Panorama nota a nota** (L/C/R) en FM y batería. **La velocidad abre el timbre**, no solo el volumen (`VEL→T` del parche). `GATE` por pista. Todo son escrituras de registro: viaja al VGM y al XGM. |
-| **Instrumentos** | Editor FM de 4 operadores con diagrama de algoritmo y envolventes; 37 presets FM (bajos, teclas, leads, cuerdas, campana techno, stab, ácido, theremin, los de jazz —saxo, guitarra, contrabajo y vibráfono—, **cuerdas de arco** —violín, sección de violines, pizzicato, spiccato, sul ponticello y chelo— y **electricidad**: el rayo y el zumbido del pararrayos); 13 presets PSG con envolvente, vibrato y caída de tono (láser, chispa); kit de ruido (6) y kit PCM (8) sintetizados: bombo, caja, hats, palmas, toms, rim, cencerro, **syndrum/láser**, **timbal afinable** (dos octavas, un semitono cada 1/24 del mando TONO), **plato**, **rayo**, **trueno** y **chispazo** (cada hueco del kit puede ser cualquiera de ellos). |
+| **Instrumentos** | Editor FM de 4 operadores con diagrama de algoritmo y envolventes; 42 presets FM (bajos, teclas, leads, cuerdas, campana techno, stab, ácido, theremin, los de jazz —saxo, guitarra, contrabajo y vibráfono—, **cuerdas de arco** —violín, sección de violines, pizzicato, spiccato, sul ponticello y chelo—, **electricidad** —el rayo y el zumbido del pararrayos—, **metales** —trompeta, trompa y tuba—, **clave** y **oboe**); 13 presets PSG con envolvente, vibrato y caída de tono (láser, chispa); kit de ruido (6) y kit PCM (8) sintetizados: bombo, caja, hats, palmas, toms, rim, cencerro, **syndrum/láser**, **timbal afinable** (dos octavas, un semitono cada 1/24 del mando TONO), **plato**, **rayo**, **trueno** y **chispazo** (cada hueco del kit puede ser cualquiera de ellos). |
 | **Entrada** | Teclado de ordenador y en pantalla, **Web MIDI**, acordes en una sola pista = arpegio a 60 Hz (como los drivers reales). **Importar** un MIDI, un VGM/VGZ o un proyecto (arrastrándolo a la ventana o en CANCIÓN → IMPORTAR…). |
 | **Salida** | WAV 16/24/32f · stems por canal (ZIP) · MIDI SMF1 · **VGM/VGZ** (bucle + GD3) · **XGM** (SGDK) · **ROM de Mega Drive** (`.bin`, con el driver XGM dentro: para emulador o cartucho flash) · proyecto JSON · enlace compartible (la canción va en la URL). Cada formato sale de la **canción entera, del patrón seleccionado (en bucle) o de cada patrón por separado en un ZIP** (los stems, una carpeta por patrón); MUTE y SOLO cuentan en todos, MIDI incluido. |
 
@@ -120,6 +123,42 @@ descenso), con las notas fuertes en notas del acorde o en apoyaturas que resuelv
 la misma idea suena sobre cualquier acorde: eso es una secuencia. Cada compás se coloca en la octava
 que deja la melodía en su registro, por encima de las cuerdas. Añadir una progresión o una idea es
 añadir una línea a `COSMIC_PROGS` o `COSMIC_IDEAS`.
+
+## Recursos: piezas de juego y figuras
+
+La pestaña **RECURSOS** tiene dos partes.
+
+**Piezas de juego** ([`src/music/piezas.ts`](src/music/piezas.ts)). Crean un tema nuevo en la tónica elegida, en el modo en que
+está escrita cada pieza o forzado a mayor o a menor:
+
+| Pieza | Compás · tempo | Forma y plantilla |
+|---|---|---|
+| **FANFARRIA** | 4/4 · ♩ 112–132 | Cuatro compases que no vuelven a empezar (ganar, abrir un cofre, entrar en palacio): dos trompetas en terceras, trompas, tuba, timbales en cada acorde, marcha de caja con redoble y, al final, plato, gran cassa y un destello que sube en el PSG. |
+| **MAESTOSO** | 4/4 · ♩ 72–86 | Entrada de dos compases con redoble y una llamada en la dominante, y un tema de dos frases (A acaba en semicadencia, B en cadencia perfecta) con puntillos en la trompeta, bajo que baja por grados, trompas, cuerdas, arpa en el PSG y timbales. |
+| **BOURRÉE** | 2/2 · 𝅗𝅥 54–62 | Forma binaria A A B B con anacrusa: oboe (o clave) y bajo de clave a dos voces y continuo; la repetición sale con mordentes, flauta a la octava, tambor y pandereta. |
+| **GIGA** | 6/8 · ♩. 100–112 | Binaria y en imitación: el bajo repite el sujeto una octava más abajo y la segunda parte lo invierte. Barroca con clave y oboe, o de taberna con flauta, violín, bajo en pizzicato y bodhrán. |
+| **ZARABANDA** | 3/4 · ♩ 56–66 | Binaria, lenta, con el peso en el segundo tiempo (las cuerdas vuelven a atacar ahí) y un retardo 9–8 en la cadencia final. De corte (violín y cuerdas) o de capilla (oboe, órgano y coro). |
+| **AGITATO** | 4/4 · ♩ 160–176 | Persecución o combate: trémolo de cuerdas, metales con síncopas, golpes de trompa, bajo en corcheas con aproximación cromática y una escala que sube al final; uno de los temas recorre el círculo de quintas. |
+
+Las melodías están escritas a mano en grados (`grado.duración`, con `#`/`b` para alterar y `~` para ligar), así que suenan en
+cualquier tonalidad; en menor la sensible se sube sola sobre la dominante, y la sexta también cuando sube hacia ella. Los
+bajos de las danzas y del maestoso no están escritos: se buscan nota a nota con programación dinámica contra la melodía,
+como un contrapunto a dos voces (sin quintas ni octavas paralelas, consonancia en las partes fuertes, notas de paso solo
+por grados). Los tests comprueban cada compás escrito, que cada parte fuerte caiga en una nota del acorde y que no haya
+paralelas. Para estas piezas se añadieron al final del banco FM **TROMPETA**, **TROMPA**, **TUBA**, **CLAVE** y **OBOE**,
+ajustados como las cuerdas: contra un espectro objetivo, con el ataque medido y comprobando que el brillo de los metales
+florece en el ataque y crece con la velocidad.
+
+**Figuras** ([`src/music/figuras.ts`](src/music/figuras.ts)). Trabajan sobre la pista seleccionada y las notas seleccionadas
+en el piano roll (sin selección, el primer compás con notas hace de motivo y las articulaciones van a toda la pista).
+Todo se mueve por grados de la escala del tema, y Ctrl+Z deshace cualquiera.
+
+| Grupo | Figuras |
+|---|---|
+| Retórica | **GRADATIO** (el motivo sube un grado tres veces, cada vez más fuerte) · **ANÁFORA** (la cabeza vuelve al empezar cada frase) · **SECUENCIA** (el motivo y todas las voces que suenan con él bajan un grado tres veces) · **OSTINATO** (el motivo hasta el final del patrón). Anáfora y ostinato sirven también en la batería. |
+| Adorno | **RETARDO** (la nota de arriba suena antes y resuelve bajando; si la anterior ya era esa, se liga) · **MELISMA** (la nota larga gira y corre por grados hasta la siguiente) · **MORDENTE** (nota, la de debajo y vuelta, sin re-atacar). |
+| Textura | **UNÍSONO** (dobla la línea en otra pista libre: FM con PSG o al revés) · **TRÍADA** y **CUATRÍADA** (armoniza la melodía por medio compás con acordes de la tonalidad que contienen la nota fuerte, con conducción de voces, en las pistas libres) · **CLUSTER** (segundas pegadas bajo la melodía). |
+| Articulación | **LEGATO** (sin huecos y ligado) · **STACCATO** (a la mitad) · **RUBATO** (en la rejilla de semicorcheas: en cada compás la nota más alta se estira un paso y la siguiente lo devuelve, mientras el acompañamiento sigue a tempo). |
 
 ## Importar MIDI y VGM
 
@@ -190,6 +229,8 @@ src/music/     Modelo y teoría
   electro.ts     TECHNO MINIMAL y DARK   electrokit.ts base de los tres (bajo, acordes a tres voces, arpegios)
   jazz.ts        JAZZ FUSION y JAZZ SWING: acordes, voces, bajo andante, melodía por frases, kit de jazz
   tormenta.ts    TORMENTA: cuerdas, timbales y el pararrayos (carga, rayo, trueno y lluvia)
+  piezas.ts      PIEZAS DE JUEGO: fanfarria, maestoso, bourrée, giga, zarabanda, agitato; contrapunto del bajo
+  figuras.ts     FIGURAS sobre la selección: retórica, adorno, textura y articulación
 src/import/    importar MIDI (midi.ts) y VGM (vgm.ts, con vgmParse.ts, ymTrack.ts, psgTrack.ts y la rejilla de tempo grid.ts); patterns.ts trocea en patrones
 src/export/    render offline, WAV, MIDI, VGM (+lector), XGM, compartir, worker
   escopo.ts      qué se exporta: canción, patrón seleccionado o cada patrón (patternSong, nombres de archivo)

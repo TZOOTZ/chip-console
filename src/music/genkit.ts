@@ -76,6 +76,11 @@ export const FM = {
   CELLO: 34,
   RAYO: 35,
   PARARRAYOS: 36,
+  TROMPETA: 37,
+  TROMPA: 38,
+  TUBA: 39,
+  CLAVE: 40,
+  OBOE: 41,
 } as const
 export const PSG = { LEAD: 0, PLUCK: 1, PAD: 2, STAB: 3, ARP: 4, BASS: 5, ECHO: 6, SWELL: 7, LASER: 8, BLIP: 9, TWINKLE: 10, PLUCK_HI: 11, CHISPA: 12 } as const
 export const DR = { KICK: 0, SNARE: 1, HAT: 2, OPEN: 3, CLAP: 4, TOM_LO: 5, TOM_HI: 6, RIM: 7 } as const

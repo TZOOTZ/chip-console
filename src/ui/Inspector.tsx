@@ -6,11 +6,13 @@ import { Icon } from './icons'
 import { ComposePanel } from './panels/ComposePanel'
 import { FmEditor } from './panels/FmEditor'
 import { DrumEditor, NoiseEditor, PsgEditor } from './panels/KitEditors'
+import { ResourcesPanel } from './panels/ResourcesPanel'
 import { SongPanel } from './panels/SongPanel'
 import { cx, capturePointer, rem } from './util'
 
 const TABS: { id: PanelId; label: string; title: string }[] = [
   { id: 'compose', label: 'COMPONER', title: 'Generar temas, rellenar pistas, acordes y herramientas' },
+  { id: 'res', label: 'RECURSOS', title: 'Piezas de juego (fanfarria, maestoso, danzas…) y figuras sobre la selección (secuencia, retardo, legato…)' },
   { id: 'inst', label: 'INSTRUMENTO', title: 'Sonido de la pista seleccionada' },
   { id: 'song', label: 'CANCIÓN', title: 'Tempo, tonalidad, proyectos, MIDI y exportación' },
 ]
@@ -108,6 +110,7 @@ export function Inspector({ dock }: { dock: 'right' | 'bottom' }) {
       {open && (
         <div className="insp-body">
           {panel === 'compose' && <ComposePanel />}
+          {panel === 'res' && <ResourcesPanel />}
           {panel === 'inst' && <InstrumentPanel />}
           {panel === 'song' && <SongPanel />}
         </div>
