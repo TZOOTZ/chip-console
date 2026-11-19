@@ -60,7 +60,7 @@ function stormKit(env: Env): void {
   env.song.noiseKit = [
     ...env.song.noiseKit.slice(0, 6),
     { name: 'LLUVIA', white: true, rate: 0, vol: 8, a: 0, d: 0, s: 0, r: 12 },
-    { name: 'TRUENO', white: true, rate: 2, vol: 15, a: 0, d: 50, s: 15, r: 30 },
+    { name: 'TRUENO', white: true, rate: 2, vol: 15, a: 0, d: 130, s: 15, r: 45 },
   ]
   const tonic = 45 + mod12(env.key - 9)
   env.song.drumKit = [
@@ -203,7 +203,7 @@ function sparks(env: Env, rec: NoteRec, at: number, count: number, total: number
 function thunder(rec: NoteRec, at: number, near: boolean, total: number, noise: [number, number][]): void {
   if (at >= total) return
   beat(rec, at, TRUENO, near ? 14 : 9)
-  const len = Math.min(near ? 12 : 16, total - at)
+  const len = Math.min(near ? 20 : 24, total - at)
   put(rec, 'noise', at, len, NZ_TRUENO, near ? 13 : 9)
   noise.push([at, len])
 }

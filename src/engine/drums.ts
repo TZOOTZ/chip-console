@@ -175,7 +175,7 @@ export function renderDrum(v: DrumVoice, sr: number): Float32Array {
       dur = lerp(0.25, 0.9, v.decay)
       break
     case 'thunder':
-      dur = lerp(0.8, 2.2, v.decay)
+      dur = lerp(1.2, 4.5, v.decay)
       break
     case 'arc':
       dur = lerp(0.15, 0.9, v.decay)
@@ -375,32 +375,46 @@ export function renderDrum(v: DrumVoice, sr: number): Float32Array {
       break
     }
     case 'thunder': {
-      // trueno: el retumbo, ruido grave que llega en oleadas y rueda, y (si es cercano) el estallido.
-      // pitch = altura del retumbo (corte del paso-bajo) · tone = cercanía: estallido y ataque rápido · decay = duración
-      const fc = lerp(110, 420, v.pitch)
-      const lp1 = Biquad.make('lp', fc, sr, 0.6)
-      const lp2 = Biquad.make('lp', fc * 1.4, sr, 0.6)
+      // trueno: el estallido (si cae cerca), el primer golpe con cuerpo y luego el retumbo, que llega en
+      // oleadas, rueda, se oscurece según se aleja y se apaga en una cola larga.
+      // pitch = altura del retumbo · tone = cercanía: estallido, ataque rápido y brillo del golpe · decay = duración
+      const fc = lerp(60, 240, v.pitch)
+      // dos caminos de ruido grave: el del golpe (con cuerpo) y el del retumbo (hondo); se pasa de uno a otro
+      const lpA = Biquad.make('lp', fc * 1.7, sr, 0.6)
+      const lpA2 = Biquad.make('lp', fc * 2.2, sr, 0.6)
+      const lpB = Biquad.make('lp', fc * 0.6, sr, 0.7)
+      const lpB2 = Biquad.make('lp', fc * 0.8, sr, 0.7)
       // sin subsónico: lo que no se oye solo come margen
-      const hp = Biquad.make('hp', 38, sr, 0.7)
-      const hp2 = Biquad.make('hp', 38, sr, 0.7)
+      const hp = Biquad.make('hp', 34, sr, 0.7)
+      const hp2 = Biquad.make('hp', 34, sr, 0.7)
       const crackHp = Biquad.make('hp', 1200, sr)
-      // el rodar: una modulación lenta y desigual (ruido a 6 Hz)
-      const wob = Biquad.make('lp', 6, sr, 0.7)
+      // el rodar: una modulación lenta y desigual (ruido a 3 Hz)
+      const wob = Biquad.make('lp', 3, sr, 0.7)
       const u = (): number => (rng.next() + 1) / 2
-      const att = lerp(0.18, 0.02, v.tone)
+      const att = lerp(0.2, 0.02, v.tone)
+      // la cola: cae unos 30 dB a lo largo del trueno
       const tau = dur / 3
+      // cada oleada se apaga despacio
+      const tauW = dur / 2.5
+      // el paso del golpe al retumbo
+      const tDark = lerp(0.6, 1.1, v.tone)
       const waves: [number, number][] = [[0, 1]]
-      for (let k = 1; k <= 3; k++) waves.push([dur * (0.12 + 0.2 * k) * (0.8 + 0.4 * u()), 0.5 + 0.3 * u()])
+      for (let k = 1; k <= 4; k++) waves.push([dur * (0.06 + 0.13 * k) * (0.8 + 0.4 * u()), 0.45 + 0.35 * u()])
       for (let i = 0; i < n; i++) {
         const t = i * dt
         let env = 0
         for (const [t0, g] of waves) {
           if (t < t0) continue
           const x = t - t0
-          env += g * (1 - Math.exp(-x / att)) * Math.exp(-x / (t0 === 0 ? tau : tau * 0.7))
+          env += g * (1 - Math.exp(-x / att)) * Math.exp(-x / tauW)
         }
-        const roll = 1 + 2.5 * wob.run(rng.next())
-        let s = hp2.run(hp.run(lp2.run(lp1.run(rng.next())))) * 7 * env * Math.max(0.2, roll)
+        env *= Math.exp(-t / tau)
+        const roll = 1 + 2.8 * wob.run(rng.next())
+        const r = rng.next()
+        const w = Math.exp(-t / tDark)
+        const body = lpA2.run(lpA.run(r))
+        const deep = lpB2.run(lpB.run(r)) * 1.4
+        let s = hp2.run(hp.run(body * w + deep * (1 - w))) * 7 * env * Math.max(0.2, roll)
         if (t < 0.06) s += crackHp.run(rng.next()) * v.tone * 1.4 * Math.exp(-t / 0.012)
         out[i] = s
       }

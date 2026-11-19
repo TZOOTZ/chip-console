@@ -106,8 +106,9 @@ sección entra en 100 ms, el pizzicato y el spiccato se apagan solos aunque la n
 armónica marcada. Al violín no se le abre el timbre con la velocidad (`velMod`): con tanta modulación, abrirlo más lo
 oscurecería. El RAYO de FM cae cuatro octavas en picado y el PARARRAYOS es un zumbido sostenido que titubea. En el DAC, el
 **rayo** es un chasquido de banda ancha y su chisporroteo (casi toda la energía por encima de 2 kHz), el **trueno** un retumbo
-que llega en oleadas (por debajo de 300 Hz, sin subsónico, hasta 2,2 s) y el **chispazo** un tren de impulsos a la frecuencia
-del zumbido. Lo malo: el trueno es una muestra larga y TORMENTA es el estilo que más ocupa en el cartucho (unos 220 KB).
+que llega en oleadas: un golpe con cuerpo que en un segundo se hunde en un rodar hondo (casi todo por debajo de 150 Hz, sin
+subsónico) y se apaga en una cola larga, de 1,2 a 4,5 s (3,7 s en el kit de TORMENTA); el **chispazo** es un tren de impulsos a la
+frecuencia del zumbido. Lo malo: el trueno es una muestra larga y TORMENTA es el estilo que más ocupa en el cartucho (unos 270 KB).
 
 En los tres primeros (y en los dos de jazz) los acordes sostenidos se reparten en **tres canales FM** (una nota por canal, con
 conducción de voces), así que suenan como un acorde real y no como el arpegio de 60 Hz. Cada estilo

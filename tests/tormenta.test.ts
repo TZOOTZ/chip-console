@@ -5,7 +5,7 @@ import { generateSong } from '../src/music/generator'
 import { FM_PRESETS, createEmptySong } from '../src/music/presets'
 import type { DrumVoice, Note, Song } from '../src/music/song'
 import { scaleById } from '../src/music/theory'
-import { db, magnitudeSpectrum } from './helpers'
+import { db, magnitudeSpectrum, rms } from './helpers'
 
 const SR = 44100
 const fmIndex = (name: string): number => FM_PRESETS.findIndex((p) => p.name === name)
@@ -121,13 +121,19 @@ describe('electricidad', () => {
     expect(low).toBeLessThan(0.1)
   })
 
-  it('trueno: grave, largo y sin subsónico', () => {
+  it('trueno: muy grave, largo, se oscurece y se apaga, sin subsónico', () => {
     const x = renderDrum(voice('thunder', 0.4, 0.6, 0.5), SR)
-    expect(x.length / SR).toBeGreaterThan(1)
-    const [low] = bandShare(x, 300, 2000)
-    expect(low).toBeGreaterThan(0.7)
+    expect(x.length / SR).toBeGreaterThan(3)
+    const [low] = bandShare(x, 150, 2000)
+    expect(low).toBeGreaterThan(0.75)
     const [sub] = bandShare(x, 25, 20000)
-    expect(sub).toBeLessThan(0.01)
+    expect(sub).toBeLessThan(0.015)
+    // el golpe tiene cuerpo y la cola es más honda y bastante más floja
+    const q = Math.floor(x.length / 4)
+    const head = x.subarray(0, q)
+    const tail = x.subarray(3 * q)
+    expect(bandShare(head, 100, 2000)[1]).toBeGreaterThan(bandShare(tail, 100, 2000)[1] * 2)
+    expect(db(rms(tail)) - db(rms(head))).toBeLessThan(-10)
   })
 
   it('chispazo: un zumbido de impulsos a la frecuencia pedida', () => {
