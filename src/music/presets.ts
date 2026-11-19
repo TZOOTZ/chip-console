@@ -240,6 +240,73 @@ export const FM_PRESETS: FmPatch[] = [
     [op(1, 44, 31, 10, 6, 0, 8), op(1, 2, 31, 6, 8, 1, 6, 0, 0, 1), op(1, 52, 31, 20, 15, 0, 10), op(4, 24, 31, 18, 15, 0, 9, 0, 0, 1)],
     { ams: 2 },
   ),
+  // 29 — cuerdas de arco. Todas en algoritmo 4: una pila con realimentación da la diente de sierra de la
+  // cuerda frotada y la otra, a la octava, el color de la caja. El arco es la subida (AR 19-24); el
+  // vibrato llega tarde, como en un violinista. La velocidad es la presión del arco (velMod)
+  fm(
+    'VIOLIN',
+    4,
+    6,
+    [op(1, 24, 19, 3, 4, 0, 8), op(1, 6, 17, 0, 0, 0, 8), op(3, 56, 19, 4, 5, 0, 8), op(2, 14, 17, 0, 0, 0, 8, 3)],
+    { vib: { delay: 15, rate: 5.8, depth: 18 } },
+  ),
+  // sección: dos portadoras desafinadas (DT +2 / −2) a 4,5 dB una de otra, para que batan sin anularse
+  fm(
+    'VIOLINS',
+    4,
+    6,
+    [op(1, 24, 15, 0, 0, 0, 7), op(1, 5, 14, 0, 0, 0, 7, 2), op(1, 36, 15, 0, 0, 0, 7), op(1, 20, 14, 0, 0, 0, 7, 6)],
+    { vib: { delay: 0, rate: 5.4, depth: 8 } },
+  ),
+  // pizzicato: cuerda pulsada que se apaga sola; el golpe de dedo es el modulador 4:1, que dura un instante
+  fm(
+    'PIZZICATO',
+    4,
+    3,
+    [op(1, 24, 31, 12, 15, 0, 10, 0, 1), op(1, 8, 31, 13, 15, 0, 10, 0, 1), op(4, 36, 31, 14, 15, 0, 12), op(2, 14, 31, 15, 15, 0, 10, 3, 1)],
+    { velMod: 14 },
+  ),
+  // spiccato: arco saltado para los ostinatos en semicorcheas, mordida corta y poco cuerpo sostenido
+  fm(
+    'SPICCATO',
+    4,
+    6,
+    [op(1, 24, 31, 10, 6, 0, 10), op(1, 7, 29, 13, 8, 6, 11), op(3, 56, 31, 14, 15, 0, 11), op(2, 26, 29, 14, 8, 6, 11, 3)],
+    { velMod: 6 },
+  ),
+  // sul ponticello: arco junto al puente, vidrioso. Los parciales 3 y 5 desafinados mandan sobre la
+  // fundamental; con el LFO del chip encendido, además, tiembla
+  fm(
+    'PONTICELLO',
+    4,
+    7,
+    [op(1, 30, 18, 0, 0, 0, 8), op(1, 4, 17, 0, 0, 0, 8, 0, 0, 1), op(5, 36, 18, 0, 0, 0, 8, 2), op(3, 8, 16, 0, 0, 0, 8, 6, 0, 1)],
+    { vib: { delay: 0, rate: 6.5, depth: 10 }, ams: 2 },
+  ),
+  fm(
+    'CELLO',
+    4,
+    4,
+    [op(1, 30, 19, 2, 3, 0, 7), op(1, 5, 18, 0, 0, 0, 7), op(2, 40, 20, 0, 0, 0, 7), op(1, 18, 18, 0, 0, 0, 7, 2)],
+    { vib: { delay: 18, rate: 5.2, depth: 14 }, velMod: 10 },
+  ),
+  // 35 — electricidad. RAYO: cadena con el OP1 a realimentación máxima (casi ruido) y relaciones
+  // inarmónicas, que cae cuatro octavas en picado. PARARRAYOS: el zumbido de la carga, un arco
+  // sostenido que titubea (vibrato rápido); se toca grave y se sube con GLIDE hasta el rayo
+  fm(
+    'RAYO',
+    0,
+    7,
+    [op(1, 20, 31, 6, 4, 0, 12), op(11, 24, 31, 10, 6, 0, 12, 3), op(7, 28, 31, 8, 8, 0, 12, 5), op(1, 4, 31, 13, 15, 0, 12)],
+    { pitchEnv: { semis: 36, frames: 10 } },
+  ),
+  fm(
+    'PARARRAYOS',
+    1,
+    7,
+    [op(1, 22, 31, 0, 0, 0, 6), op(7, 30, 31, 0, 0, 0, 6, 3), op(1, 26, 31, 0, 0, 0, 6), op(1, 6, 28, 0, 0, 0, 6)],
+    { vib: { delay: 0, rate: 13, depth: 30 } },
+  ),
 ]
 
 const psg = (name: string, vol: number, a: number, d: number, s: number, r: number, extra: Partial<PsgInst> = {}): PsgInst => ({
@@ -268,6 +335,8 @@ export const PSG_PRESETS: PsgInst[] = [
   psg('TWINKLE', 12, 0, 10, 12, 4, { pitchEnv: { semis: 12, frames: 2 }, vib: { delay: 6, rate: 7, depth: 12 } }),
   // el mismo pluck al máximo que da el chip: con el PSG calibrado a la consola, los arpegios lo necesitan
   psg('PLUCK HI', 15, 0, 12, 15, 2),
+  // chispa: tres octavas que caen en tres frames y se apagan; un chasquido eléctrico, no una nota
+  psg('CHISPA', 15, 0, 4, 15, 0, { pitchEnv: { semis: 36, frames: 3 } }),
 ]
 
 const nz = (name: string, white: boolean, rate: number, vol: number, d: number, s: number, r = 0): NoiseVoice => ({

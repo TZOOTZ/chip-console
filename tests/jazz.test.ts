@@ -35,7 +35,7 @@ function progressionOf(song: Song, feel: JazzStyle, name: string): JazzChord[][]
 describe('JAZZ FUSION y JAZZ SWING', () => {
   it('están en la lista de estilos, con su tempo, y el banco FM trae los cuatro sonidos de jazz al final', () => {
     for (const feel of FEELS) expect(STYLES.find((s) => s.id === feel)!.bpm).toEqual(JAZZ_BPM[feel])
-    expect(FM_PRESETS.slice(FM.SAX).map((p) => p.name)).toEqual(['SAX', 'JAZZ GUITAR', 'WALK BASS', 'VIBES'])
+    expect(FM_PRESETS.slice(FM.SAX, FM.VIBES + 1).map((p) => p.name)).toEqual(['SAX', 'JAZZ GUITAR', 'WALK BASS', 'VIBES'])
     expect([FM.SAX, FM.JAZZ_GUITAR, FM.WALK_BASS, FM.VIBES]).toEqual([25, 26, 27, 28])
     expect(createEmptySong().fmBank.length).toBe(FM_PRESETS.length)
   })

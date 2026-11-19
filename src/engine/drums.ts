@@ -171,6 +171,15 @@ export function renderDrum(v: DrumVoice, sr: number): Float32Array {
     case 'crash':
       dur = lerp(0.35, 1.1, v.decay)
       break
+    case 'bolt':
+      dur = lerp(0.25, 0.9, v.decay)
+      break
+    case 'thunder':
+      dur = lerp(0.8, 2.2, v.decay)
+      break
+    case 'arc':
+      dur = lerp(0.15, 0.9, v.decay)
+      break
     default:
       dur = lerp(0.08, 0.3, v.decay)
       break
@@ -334,6 +343,106 @@ export function renderDrum(v: DrumVoice, sr: number): Float32Array {
         const env = Math.exp(-t / 0.006)
         out[i] =
           (Math.sin(2 * Math.PI * f * t) * 0.8 + Math.sin(2 * Math.PI * f * 0.31 * t) * 0.6 + rng.next() * 0.25) * env
+      }
+      break
+    }
+    case 'bolt': {
+      // rayo: el chasquido de la descarga (6 ms de ruido de banda ancha a tope) y el chisporroteo que
+      // lo sigue, golpecitos de ruido cada vez más espaciados y flojos sobre un siseo que se apaga.
+      // pitch = densidad del chisporroteo · tone = brillo (corte del paso-alto) · decay = duración
+      const hp = Biquad.make('hp', lerp(500, 2600, v.tone), sr, 0.7)
+      const rate0 = lerp(40, 260, v.pitch)
+      const u = (): number => (rng.next() + 1) / 2
+      let next = 0.006
+      let burst = 0
+      let amp = 0
+      for (let i = 0; i < n; i++) {
+        const t = i * dt
+        let s = t < 0.006 ? rng.next() * (1.6 - (0.6 * t) / 0.006) : 0
+        if (t >= next) {
+          burst = Math.round(sr * lerp(0.0008, 0.0025, u()))
+          amp = Math.exp(-t / (dur / 3)) * (0.5 + 0.5 * u())
+          // llegadas de Poisson cuya frecuencia cae con el tiempo: cada vez más espaciadas
+          next = t + -Math.log(1e-6 + u()) / (rate0 * Math.exp(-t / (dur / 2.5)))
+        }
+        if (burst > 0) {
+          s += rng.next() * amp
+          burst--
+        }
+        s += rng.next() * 0.35 * Math.exp(-t / (dur / 5))
+        out[i] = hp.run(s)
+      }
+      break
+    }
+    case 'thunder': {
+      // trueno: el retumbo, ruido grave que llega en oleadas y rueda, y (si es cercano) el estallido.
+      // pitch = altura del retumbo (corte del paso-bajo) · tone = cercanía: estallido y ataque rápido · decay = duración
+      const fc = lerp(110, 420, v.pitch)
+      const lp1 = Biquad.make('lp', fc, sr, 0.6)
+      const lp2 = Biquad.make('lp', fc * 1.4, sr, 0.6)
+      // sin subsónico: lo que no se oye solo come margen
+      const hp = Biquad.make('hp', 38, sr, 0.7)
+      const hp2 = Biquad.make('hp', 38, sr, 0.7)
+      const crackHp = Biquad.make('hp', 1200, sr)
+      // el rodar: una modulación lenta y desigual (ruido a 6 Hz)
+      const wob = Biquad.make('lp', 6, sr, 0.7)
+      const u = (): number => (rng.next() + 1) / 2
+      const att = lerp(0.18, 0.02, v.tone)
+      const tau = dur / 3
+      const waves: [number, number][] = [[0, 1]]
+      for (let k = 1; k <= 3; k++) waves.push([dur * (0.12 + 0.2 * k) * (0.8 + 0.4 * u()), 0.5 + 0.3 * u()])
+      for (let i = 0; i < n; i++) {
+        const t = i * dt
+        let env = 0
+        for (const [t0, g] of waves) {
+          if (t < t0) continue
+          const x = t - t0
+          env += g * (1 - Math.exp(-x / att)) * Math.exp(-x / (t0 === 0 ? tau : tau * 0.7))
+        }
+        const roll = 1 + 2.5 * wob.run(rng.next())
+        let s = hp2.run(hp.run(lp2.run(lp1.run(rng.next())))) * 7 * env * Math.max(0.2, roll)
+        if (t < 0.06) s += crackHp.run(rng.next()) * v.tone * 1.4 * Math.exp(-t / 0.012)
+        out[i] = s
+      }
+      break
+    }
+    case 'arc': {
+      // chispazo: el arco de un pararrayos cargado. Un tren de impulsos a frecuencia de zumbido que
+      // titubea y se salta descargas, con su resonancia aguda y chispas sueltas por encima.
+      // pitch = frecuencia del zumbido · tone = chispas frente a zumbido · decay = duración
+      const f = lerp(50, 220, v.pitch)
+      const hp = Biquad.make('hp', 90, sr, 0.7)
+      const bp = Biquad.make('bp', lerp(900, 2400, v.pitch), sr, 1.4)
+      const crackHp = Biquad.make('hp', 2000, sr)
+      const flick = Biquad.make('lp', 9, sr, 0.7)
+      const u = (): number => (rng.next() + 1) / 2
+      const kPulse = Math.exp(-dt / 0.001)
+      let ph = 0
+      let pulse = 0
+      let next = 0.01
+      let burst = 0
+      for (let i = 0; i < n; i++) {
+        const t = i * dt
+        ph += f * (1 + 0.08 * rng.next()) * dt
+        if (ph >= 1) {
+          ph -= 1
+          // una de cada siete descargas no salta
+          if (u() > 0.15) pulse = 0.6 + 0.4 * u()
+        }
+        const buzz = hp.run(pulse) * 0.8 + bp.run(pulse) * 2.2
+        pulse *= kPulse
+        let crack = 0
+        if (t >= next) {
+          burst = Math.round(sr * lerp(0.0006, 0.002, u()))
+          next = t + -Math.log(1e-6 + u()) / lerp(8, 45, v.tone)
+        }
+        if (burst > 0) {
+          crack = crackHp.run(rng.next()) * 1.2
+          burst--
+        } else crackHp.run(0)
+        // titubeo del arco, ataque de 5 ms y el último tercio que se apaga
+        const env = Math.min(1, t / 0.005) * Math.min(1, (dur - t) / (dur * 0.35)) * (0.75 + 0.6 * flick.run(rng.next()))
+        out[i] = (buzz * lerp(1, 0.55, v.tone) + crack * lerp(0.4, 1, v.tone)) * env
       }
       break
     }

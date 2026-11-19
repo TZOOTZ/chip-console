@@ -14,7 +14,7 @@ oyes es exactamente lo que se exporta al VGM.
 
 1. Abre la app y pulsa para encender.
 2. **COMPONER → GENERAR TEMA** (estilo + tónica; *OTRO* crea una canción nueva con otra semilla).
-   Estilos: **COSMIC DISCO**, **TECHNO MINIMAL**, **DARK**, **JAZZ FUSION**, **JAZZ SWING**, TZOOTZ ERA, aventura, jefe final y house 1992.
+   Estilos: **COSMIC DISCO**, **TECHNO MINIMAL**, **DARK**, **JAZZ FUSION**, **JAZZ SWING**, **TORMENTA**, TZOOTZ ERA, aventura, jefe final y house 1992.
    ¿Prefieres empezar de cero? **NUEVO** (cabecera, o en la propia pantalla de arranque) crea un tema
    en blanco con el título, tempo, compás, tono y sonidos que elijas.
 3. **Espacio** reproduce desde el patrón seleccionado, **Enter** desde el inicio.
@@ -69,10 +69,10 @@ exportado de Inkscape se conserva en [`docs/brand/logo-original.svg`](docs/brand
 | Área | Qué hay |
 |---|---|
 | **Sonido** | Emulación de YM2612 (8 algoritmos, envolventes AR/D1R/SL/D2R/RR con KS, DT, MUL, TL, feedback, LFO AM/PM, DAC, pan) y SN76489 (tonos, ruido blanco/periódico, atenuación de 2 dB) en un **AudioWorklet** con tiempo exacto a la muestra. Dos caracteres de sonido (**⚙ → SONIDO**): **MODEL 1** —DAC discreto de 9 bits con su escalón en el cruce por cero y el paso-bajo de la placa— o **LIMPIO**. El PSG va al nivel que tiene en la consola y sin aliasing. |
-| **Composición rápida** | Generador de temas en 9 estilos con semilla (ver más abajo); rellenar pista (bajo, acordes, arpegio, melodía, batería, percusión) en el lenguaje del estilo elegido; variar pista; progresiones y acordes diatónicos; bloqueo de escala. |
+| **Composición rápida** | Generador de temas en 10 estilos con semilla (ver más abajo); rellenar pista (bajo, acordes, arpegio, melodía, batería, percusión) en el lenguaje del estilo elegido; variar pista; progresiones y acordes diatónicos; bloqueo de escala. |
 | **Edición** | Piano roll en canvas (selección múltiple, copiar/pegar/duplicar, cuantizar, velocidad, notas fantasma), patrones + orden con bucle, 10 canales con mute/solo/volumen/pan, deshacer/rehacer, autoguardado, biblioteca local. |
 | **Expresión** | **Ligaduras y portamento**: una nota ligada (`LIGAR`, tecla B) no vuelve a atacar y, con el `GLIDE` de la pista, el tono se desliza hasta ella. **Panorama nota a nota** (L/C/R) en FM y batería. **La velocidad abre el timbre**, no solo el volumen (`VEL→T` del parche). `GATE` por pista. Todo son escrituras de registro: viaja al VGM y al XGM. |
-| **Instrumentos** | Editor FM de 4 operadores con diagrama de algoritmo y envolventes; 29 presets FM (bajos, teclas, leads, cuerdas, campana techno, stab, ácido, theremin y los de jazz: saxo, guitarra, contrabajo y vibráfono); 12 presets PSG con envolvente, vibrato y caída de tono (láser); kit de ruido (6) y kit PCM (8) sintetizados: bombo, caja, hats, palmas, toms, rim, cencerro, **syndrum/láser**, **timbal afinable** (dos octavas, un semitono cada 1/24 del mando TONO) y **plato**. |
+| **Instrumentos** | Editor FM de 4 operadores con diagrama de algoritmo y envolventes; 37 presets FM (bajos, teclas, leads, cuerdas, campana techno, stab, ácido, theremin, los de jazz —saxo, guitarra, contrabajo y vibráfono—, **cuerdas de arco** —violín, sección de violines, pizzicato, spiccato, sul ponticello y chelo— y **electricidad**: el rayo y el zumbido del pararrayos); 13 presets PSG con envolvente, vibrato y caída de tono (láser, chispa); kit de ruido (6) y kit PCM (8) sintetizados: bombo, caja, hats, palmas, toms, rim, cencerro, **syndrum/láser**, **timbal afinable** (dos octavas, un semitono cada 1/24 del mando TONO), **plato**, **rayo**, **trueno** y **chispazo** (cada hueco del kit puede ser cualquiera de ellos). |
 | **Entrada** | Teclado de ordenador y en pantalla, **Web MIDI**, acordes en una sola pista = arpegio a 60 Hz (como los drivers reales). **Importar** un MIDI, un VGM/VGZ o un proyecto (arrastrándolo a la ventana o en CANCIÓN → IMPORTAR…). |
 | **Salida** | WAV 16/24/32f · stems por canal (ZIP) · MIDI SMF1 · **VGM/VGZ** (bucle + GD3) · **XGM** (SGDK) · **ROM de Mega Drive** (`.bin`, con el driver XGM dentro: para emulador o cartucho flash) · proyecto JSON · enlace compartible (la canción va en la URL). Cada formato sale de la **canción entera, del patrón seleccionado (en bucle) o de cada patrón por separado en un ZIP** (los stems, una carpeta por patrón); MUTE y SOLO cuentan en todos, MIDI incluido. |
 
@@ -87,6 +87,7 @@ exportado de Inkscape se conserva en [`docs/brand/logo-original.svg`](docs/brand
 | **JAZZ FUSION** | 100–126 | Jazz de arcade, el de Galaxy Force II, Thunder Blade o Thunder Force: vamp dórico o menor con II–V (IV9, bVII9 y una dominante alterada al final que tira del bucle), bajo slap, **teclado a tres voces** (tercera, séptima y extensión) con el vibráfono arriba, saxo o metal con la línea por la escala del acorde y las notas de paso ligadas, eco en el PSG y batería de rock ligero con caja fantasma. |
 | **JAZZ SWING** | 132–168 | Corchea con swing 2:1 a tempo de negra (el swing se aplica sobre corcheas: `swingGrid` 4 y 33 %), bajo andante con aproximación cromática, guitarra tipo Freddie Green con el vibráfono arriba, saxo, ride «tu-tu-ku», pedal y bombo a pluma; «cambios de ritmo», «hojas de otoño» y «el tren A». |
 | AVENTURA · JEFE FINAL · HOUSE 1992 | 136–172 / 120–128 | Los estilos de videojuego: plataformas en mayor, menor armónica a toda velocidad y house de slap bass. |
+| **TORMENTA** | 132–148 | Cuerdas en menor bajo la tormenta, con las progresiones y el tema por ideas de COSMIC: violín solista con eco en el PSG, ostinato de violines en spiccato, una segunda sección que cambia con la semilla (sostenida, en pizzicato o sul ponticello con el trémolo del LFO), chelos en galope, motor o marcha, timbales afinados y gran cassa. Encima, la tormenta: lluvia en el ruido y el **pararrayos**, que zumba y antes de cada golpe se carga (sube ligado más de una octava, los chispazos se apiñan y saltan chispas en el PSG) hasta que cae el rayo; el trueno llega después, más flojo y más tarde cuanto más lejos cae. |
 
 **El jazz** ([`src/music/jazz.ts`](src/music/jazz.ts)). Los acordes se escriben como `raíz:tipo` sobre la tónica
 (`2:m7,7:alt` = dos acordes por compás) y todo sale de ellos: la voz grave del teclado va a FM2, la media a FM3
@@ -97,6 +98,16 @@ pone notas del acorde en los apoyos, camina por su escala entre apoyo y apoyo y 
 compases en una nota larga. El swing se compone en pasos de corchea y al escribirlo cada paso ocupa dos semicorcheas, con `swingGrid` 4 (el motor balancea parejas de corcheas, no de semicorcheas). El tema es INTRO · HEAD ×2 · SOLO · SOLO 2 · BRIDGE (una cuarta arriba, termina
 en la dominante) · OUT HEAD ×2 · TAG, y vuelve al HEAD. La batería usa solo tres niveles de golpe (15·9·5).
 Los cuatro sonidos nuevos del banco FM —SAX, JAZZ GUITAR, WALK BASS y VIBES— se añadieron al final.
+
+**Las cuerdas de arco y la electricidad** ([`src/music/tormenta.ts`](src/music/tormenta.ts), parches 30-37). Todas las cuerdas
+son dos pilas en algoritmo 4: una con realimentación da la diente de sierra de la cuerda frotada y la otra el color de la
+caja. Están medidas en el emulador, no a oído: el violín tiene un arco de 40 ms y armónicos que caen unos 6 dB por octava, la
+sección entra en 100 ms, el pizzicato y el spiccato se apagan solos aunque la nota siga pulsada, y el chelo lleva la segunda
+armónica marcada. Al violín no se le abre el timbre con la velocidad (`velMod`): con tanta modulación, abrirlo más lo
+oscurecería. El RAYO de FM cae cuatro octavas en picado y el PARARRAYOS es un zumbido sostenido que titubea. En el DAC, el
+**rayo** es un chasquido de banda ancha y su chisporroteo (casi toda la energía por encima de 2 kHz), el **trueno** un retumbo
+que llega en oleadas (por debajo de 300 Hz, sin subsónico, hasta 2,2 s) y el **chispazo** un tren de impulsos a la frecuencia
+del zumbido. Lo malo: el trueno es una muestra larga y TORMENTA es el estilo que más ocupa en el cartucho (unos 220 KB).
 
 En los tres primeros (y en los dos de jazz) los acordes sostenidos se reparten en **tres canales FM** (una nota por canal, con
 conducción de voces), así que suenan como un acorde real y no como el arpegio de 60 Hz. Cada estilo
@@ -177,6 +188,7 @@ src/music/     Modelo y teoría
   cosmic.ts      COSMIC DISCO: progresiones, ideas melódicas, timbales   genkit.ts utilidades comunes
   electro.ts     TECHNO MINIMAL y DARK   electrokit.ts base de los tres (bajo, acordes a tres voces, arpegios)
   jazz.ts        JAZZ FUSION y JAZZ SWING: acordes, voces, bajo andante, melodía por frases, kit de jazz
+  tormenta.ts    TORMENTA: cuerdas, timbales y el pararrayos (carga, rayo, trueno y lluvia)
 src/import/    importar MIDI (midi.ts) y VGM (vgm.ts, con vgmParse.ts, ymTrack.ts, psgTrack.ts y la rejilla de tempo grid.ts); patterns.ts trocea en patrones
 src/export/    render offline, WAV, MIDI, VGM (+lector), XGM, compartir, worker
   escopo.ts      qué se exporta: canción, patrón seleccionado o cada patrón (patternSong, nombres de archivo)

@@ -230,6 +230,9 @@ const KINDS: { value: DrumKind; label: string }[] = [
   { value: 'zap', label: 'LÁSER' },
   { value: 'timp', label: 'TIMBAL' },
   { value: 'crash', label: 'PLATO' },
+  { value: 'bolt', label: 'RAYO' },
+  { value: 'thunder', label: 'TRUENO' },
+  { value: 'arc', label: 'CHISPAZO' },
 ]
 
 export function DrumEditor() {

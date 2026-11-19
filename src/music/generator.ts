@@ -15,6 +15,7 @@
 //   house      Streets-of-Rage: slap bass, stabs, bombo a negras, hats a contratiempo
 //   fusion     jazz de arcade (Galaxy Force, Thunder Blade): vamp dórico con II–V, slap, saxo, vibráfono
 //   swing      jazz con swing: bajo andante, guitarra, ride y escobillas (jazz.ts)
+//   storm      TORMENTA: cuerdas en menor (violín, spiccato, chelos, timbales) y el pararrayos (tormenta.ts)
 import { ELECTRO_BPM, electroTrackNotes, generateElectro, isElectro, type ElectroStyle } from './electro'
 import {
   DR,
@@ -42,6 +43,7 @@ import {
 } from './genkit'
 import { JAZZ_BPM, generateJazz, isJazz, jazzTrackNotes, type JazzStyle } from './jazz'
 import { createEmptySong } from './presets'
+import { STORM_BPM, generateStorm, stormTrackNotes } from './tormenta'
 import type { Note, Pattern, Song } from './song'
 import { MAX_BARS, emptyPattern, patternSteps, psgRecal, psgToHardware } from './song'
 import { chordNotes, scaleById, scaleDegreeToMidi, type ChordType, type ScaleId } from './theory'
@@ -49,7 +51,7 @@ import { chordNotes, scaleById, scaleDegreeToMidi, type ChordType, type ScaleId 
 export { Rng } from './genkit'
 export type { FillKind } from './genkit'
 
-export type StyleId = ElectroStyle | JazzStyle | 'era' | 'adventure' | 'boss' | 'house'
+export type StyleId = ElectroStyle | JazzStyle | 'era' | 'adventure' | 'boss' | 'house' | 'storm'
 
 export interface StyleInfo {
   id: StyleId
@@ -69,6 +71,7 @@ export const STYLES: StyleInfo[] = [
   { id: 'house', name: 'HOUSE 1992', blurb: 'Slap bass, stabs, bombo a negras y hats a contratiempo', bpm: [120, 128], scale: 'dorian' },
   { id: 'fusion', name: 'JAZZ FUSION', blurb: 'Jazz de arcade: vamp dórico con II–V, bajo slap, teclado a tres voces vibráfono arriba, saxo y batería de rock ligero', bpm: JAZZ_BPM.fusion, scale: 'dorian' },
   { id: 'swing', name: 'JAZZ SWING', blurb: 'Corchea con swing 2:1 a tempo de negra (♩ = 132–168): bajo andante, guitarra, vibráfono, saxo y ride; II–V–I con alteradas', bpm: JAZZ_BPM.swing, scale: 'major' },
+  { id: 'storm', name: 'TORMENTA', blurb: 'Cuerdas en menor bajo la tormenta: violín solista, ostinato en spiccato, chelos y timbales; el pararrayos zumba y se carga hasta que cae el rayo, y luego el trueno', bpm: STORM_BPM, scale: 'minor' },
 ]
 
 export interface GenOptions {
@@ -466,7 +469,7 @@ interface GenericStyle {
   leadCells: { s: number; l: number }[][]
 }
 
-type GenericId = Exclude<StyleId, 'era' | ElectroStyle | JazzStyle>
+type GenericId = Exclude<StyleId, 'era' | 'storm' | ElectroStyle | JazzStyle>
 
 const GENERIC: Record<GenericId, GenericStyle> = {
   adventure: {
@@ -747,7 +750,7 @@ interface SectionPlan {
  * COSMIC DISCO escribe ya sus pistas de PSG para la calibración de hardware. El resto de los
  * estilos se compuso con el PSG 7,5 dB más alto y se traslada al final con psgToHardware().
  */
-const nativePsg = (style: StyleId): boolean => style === 'cosmic'
+const nativePsg = (style: StyleId): boolean => style === 'cosmic' || style === 'storm'
 
 export function generateSong(opts: GenOptions): Song {
   const song = composeSong(opts)
@@ -778,6 +781,12 @@ function composeSong(opts: GenOptions): Song {
   if (isJazz(opts.style)) {
     song.title = `${info.name} ${String(opts.seed % 10000).padStart(4, '0')}`
     generateJazz(song, opts.style, rng, bars, opts.bpm === undefined)
+    return song
+  }
+
+  if (opts.style === 'storm') {
+    song.title = `${info.name} ${String(opts.seed % 10000).padStart(4, '0')}`
+    generateStorm(song, rng, bars)
     return song
   }
 
@@ -979,7 +988,9 @@ export function generateTrackNotes(song: Song, pat: Pattern, trackId: string, ki
     ? electroTrackNotes(song, pat, trackId, kind, new Rng(seed), style)
     : isJazz(style)
       ? jazzTrackNotes(song, pat, trackId, kind, new Rng(seed), style)
-      : genericTrackNotes(song, pat, trackId, kind, seed, style)
+      : style === 'storm'
+        ? stormTrackNotes(song, pat, trackId, kind, new Rng(seed))
+        : genericTrackNotes(song, pat, trackId, kind, seed, style)
   const tr = song.tracks.find((t) => t.id === trackId)
   if (tr?.kind === 'psg') tunePsg(notes, tr.transpose)
   // en el PSG, lo que no nace calibrado sube lo mismo que al generar el tema entero: la parte de
@@ -1002,7 +1013,7 @@ function referenceVol(style: StyleId, trackId: string): number {
   return vols[trackId] ?? 100
 }
 
-function genericTrackNotes(song: Song, pat: Pattern, trackId: string, kind: FillKind, seed: number, style: Exclude<StyleId, ElectroStyle | JazzStyle>): Note[] {
+function genericTrackNotes(song: Song, pat: Pattern, trackId: string, kind: FillKind, seed: number, style: Exclude<StyleId, ElectroStyle | JazzStyle | 'storm'>): Note[] {
   const rng = new Rng(seed)
   const spb = song.beatsPerBar * 4
   const bars = pat.bars

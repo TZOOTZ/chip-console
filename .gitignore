@@ -16,6 +16,7 @@ tests/out
 
 # Trabajo local que no forma parte de la app
 /privado/
+/demos/
 # intermedios de compilación de la ROM (`npm run rom:build`); lo que se usa es rom/player.bin
 /rom/player/out/
 

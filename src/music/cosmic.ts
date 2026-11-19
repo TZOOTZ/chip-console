@@ -72,7 +72,7 @@ export interface Deg extends Harm {
 }
 export const dg = (deg: number, type: ChordType, mode: Mode = 'nat'): Deg => ({ root: MODES[mode][deg], type, deg, mode })
 
-const CH: Record<string, Deg> = {
+export const CH: Record<string, Deg> = {
   i: dg(0, 'min'),
   'ii°': dg(1, 'dim'),
   bII: dg(1, 'maj', 'phr'),
@@ -548,7 +548,7 @@ export interface CosmicOpts {
   contrast?: Idea
 }
 
-function pickSpec(env: Env, o: CosmicOpts = {}): ThemeSpec {
+export function pickSpec(env: Env, o: CosmicOpts = {}): ThemeSpec {
   const { rng } = env
   // los sorteos se hacen igual con y sin opciones: el resto del tema no cambia por fijar una idea
   const x0 = rng.pick(COSMIC_IDEAS)

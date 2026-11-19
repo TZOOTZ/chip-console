@@ -8,7 +8,7 @@ import { songSteps, stepsPerBar, getPattern, type DrumKind, type Song } from '..
 const PPQ = 480
 
 /** sonido de batería de la consola → nota GM, según el tipo de sonido que haya en el kit */
-const KIND_GM: Record<DrumKind, number> = { kick: 36, snare: 38, hat: 42, ohat: 46, clap: 39, tom: 45, rim: 37, cow: 56, zap: 50, timp: 43, crash: 49, sample: 39 }
+const KIND_GM: Record<DrumKind, number> = { kick: 36, snare: 38, hat: 42, ohat: 46, clap: 39, tom: 45, rim: 37, cow: 56, zap: 50, timp: 43, crash: 49, sample: 39, bolt: 57, thunder: 35, arc: 69 }
 function dacGm(song: Song, idx: number): number {
   const v = song.drumKit[idx]
   if (!v) return 36

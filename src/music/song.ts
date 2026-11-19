@@ -95,9 +95,10 @@ export interface NoiseVoice {
 /**
  * `zap` = syndrum / láser: seno con barrido de tono descendente ·
  * `timp` = timbal de orquesta afinable (pitch 0-1 = Do2-Do4) · `crash` = plato ·
- * `sample` = una muestra real (PCM de 8 bits en `pcm`), que no se sintetiza
+ * `sample` = una muestra real (PCM de 8 bits en `pcm`), que no se sintetiza ·
+ * `bolt` = rayo (chasquido y chisporroteo) · `thunder` = trueno (retumbo) · `arc` = chispazo (arco eléctrico)
  */
-export type DrumKind = 'kick' | 'snare' | 'hat' | 'ohat' | 'clap' | 'tom' | 'rim' | 'cow' | 'zap' | 'timp' | 'crash' | 'sample'
+export type DrumKind = 'kick' | 'snare' | 'hat' | 'ohat' | 'clap' | 'tom' | 'rim' | 'cow' | 'zap' | 'timp' | 'crash' | 'sample' | 'bolt' | 'thunder' | 'arc'
 
 export interface DrumVoice {
   name: string
@@ -357,7 +358,7 @@ export function cleanNoiseVoice(raw: unknown): NoiseVoice {
   }
 }
 
-const DRUM_KINDS: DrumKind[] = ['kick', 'snare', 'hat', 'ohat', 'clap', 'tom', 'rim', 'cow', 'zap', 'timp', 'crash', 'sample']
+const DRUM_KINDS: DrumKind[] = ['kick', 'snare', 'hat', 'ohat', 'clap', 'tom', 'rim', 'cow', 'zap', 'timp', 'crash', 'sample', 'bolt', 'thunder', 'arc']
 export function cleanDrumVoice(raw: unknown): DrumVoice {
   const o = rec(raw)
   let kind = DRUM_KINDS.includes(o.kind as DrumKind) ? (o.kind as DrumKind) : 'kick'
