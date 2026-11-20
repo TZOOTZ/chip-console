@@ -17,6 +17,8 @@ oyes es exactamente lo que se exporta al VGM.
    Estilos: **COSMIC DISCO**, **TECHNO MINIMAL**, **DARK**, **JAZZ FUSION**, **JAZZ SWING**, **TORMENTA**, TZOOTZ ERA, aventura, jefe final y house 1992.
    **RECURSOS → PIEZAS DE JUEGO** crea una **fanfarria**, un **maestoso**, una **bourrée**, una **giga**, una **zarabanda** o un
    **agitato**; **RECURSOS → FIGURAS** aplica figuras (secuencia, retardo, mordente, tríada, legato…) a la selección.
+   Lo generado entra **por capas**: suenan primero batería, bajo, tema y la armonía principal, y **+ SIGUIENTE** suma
+   las demás pistas de una en una (**TODAS** las abre de golpe; el interruptor **POR CAPAS** lo desactiva).
    ¿Prefieres empezar de cero? **NUEVO** (cabecera, o en la propia pantalla de arranque) crea un tema
    en blanco con el título, tempo, compás, tono y sonidos que elijas.
 3. **Espacio** reproduce desde el patrón seleccionado, **Enter** desde el inicio.
@@ -71,7 +73,7 @@ exportado de Inkscape se conserva en [`docs/brand/logo-original.svg`](docs/brand
 | Área | Qué hay |
 |---|---|
 | **Sonido** | Emulación de YM2612 (8 algoritmos, envolventes AR/D1R/SL/D2R/RR con KS, DT, MUL, TL, feedback, LFO AM/PM, DAC, pan) y SN76489 (tonos, ruido blanco/periódico, atenuación de 2 dB) en un **AudioWorklet** con tiempo exacto a la muestra. Dos caracteres de sonido (**⚙ → SONIDO**): **MODEL 1** —DAC discreto de 9 bits con su escalón en el cruce por cero y el paso-bajo de la placa— o **LIMPIO**. El PSG va al nivel que tiene en la consola y sin aliasing. |
-| **Composición rápida** | Generador de temas en 10 estilos con semilla (ver más abajo); rellenar pista (bajo, acordes, arpegio, melodía, batería, percusión) en el lenguaje del estilo elegido; variar pista; progresiones y acordes diatónicos; bloqueo de escala. |
+| **Composición rápida** | Generador de temas en 10 estilos con semilla (ver más abajo), que entra **por capas** (cuatro pistas y luego una a una); rellenar pista (bajo, acordes, arpegio, melodía, batería, percusión) en el lenguaje del estilo elegido; variar pista; progresiones y acordes diatónicos; bloqueo de escala. |
 | **Recursos** | **Piezas de juego** con su compás, su tempo y su forma: fanfarria (cuatro compases que no se repiten), maestoso (entrada con redoble y tema de dos frases), bourrée, giga en 6/8 y zarabanda en forma binaria con la repetición ornamentada, y agitato. **Figuras** sobre la selección: gradatio, anáfora, secuencia armónica, ostinato, retardo, melisma, mordente, unísono, tríada, cuatríada, cluster, legato, staccato y rubato. |
 | **Edición** | Piano roll en canvas (selección múltiple, copiar/pegar/duplicar, cuantizar, velocidad, notas fantasma), patrones + orden con bucle, 10 canales con mute/solo/volumen/pan, deshacer/rehacer, autoguardado, biblioteca local. |
 | **Expresión** | **Ligaduras y portamento**: una nota ligada (`LIGAR`, tecla B) no vuelve a atacar y, con el `GLIDE` de la pista, el tono se desliza hasta ella. **Panorama nota a nota** (L/C/R) en FM y batería. **La velocidad abre el timbre**, no solo el volumen (`VEL→T` del parche). `GATE` por pista. Todo son escrituras de registro: viaja al VGM y al XGM. |
@@ -160,6 +162,17 @@ Todo se mueve por grados de la escala del tema, y Ctrl+Z deshace cualquiera.
 | Textura | **UNÍSONO** (dobla la línea en otra pista libre: FM con PSG o al revés) · **TRÍADA** y **CUATRÍADA** (armoniza la melodía por medio compás con acordes de la tonalidad que contienen la nota fuerte, con conducción de voces, en las pistas libres) · **CLUSTER** (segundas pegadas bajo la melodía). |
 | Articulación | **LEGATO** (sin huecos y ligado) · **STACCATO** (a la mitad) · **RUBATO** (en la rejilla de semicorcheas: en cada compás la nota más alta se estira un paso y la siguiente lo devuelve, mientras el acompañamiento sigue a tempo). |
 
+## Generar por capas
+
+Oír diez pistas nuevas a la vez no deja juzgar nada. Por eso, al generar un tema (COMPONER) o una pieza (RECURSOS), suenan
+solo cuatro pistas: **batería, bajo, tema y la armonía principal**. Las demás quedan en mute, en espera, y
+**+ SIGUIENTE: nombre** las suma de una en una en el orden en que se monta un arreglo: el resto de la armonía (o la
+segunda voz), la percusión de ruido y los colores del PSG. **TODAS** las abre de golpe y **POR CAPAS** apaga el modo
+(se recuerda). Si la base no convence, **OTRO**/**OTRA** genera otra y vuelve a empezar por cuatro.
+
+Todo es mute de pista ([`src/music/capas.ts`](src/music/capas.ts)): Ctrl+Z vuelve a callar la última pista, los
+botones **M** de los canales siguen mandando, lo que está en espera no se exporta y el enlace guarda qué pistas esperan.
+
 ## Importar MIDI y VGM
 
 **CANCIÓN → IMPORTAR…** o arrastrar el archivo sobre la ventana. El tipo se reconoce por el contenido (`.json`, `.mid`, `.vgm`, `.vgz`) y el
@@ -231,6 +244,7 @@ src/music/     Modelo y teoría
   tormenta.ts    TORMENTA: cuerdas, timbales y el pararrayos (carga, rayo, trueno y lluvia)
   piezas.ts      PIEZAS DE JUEGO: fanfarria, maestoso, bourrée, giga, zarabanda, agitato; contrapunto del bajo
   figuras.ts     FIGURAS sobre la selección: retórica, adorno, textura y articulación
+  capas.ts       generar por capas: orden de entrada de las pistas, primera capa, SIGUIENTE y TODAS
 src/import/    importar MIDI (midi.ts) y VGM (vgm.ts, con vgmParse.ts, ymTrack.ts, psgTrack.ts y la rejilla de tempo grid.ts); patterns.ts trocea en patrones
 src/export/    render offline, WAV, MIDI, VGM (+lector), XGM, compartir, worker
   escopo.ts      qué se exporta: canción, patrón seleccionado o cada patrón (patternSong, nombres de archivo)
@@ -258,6 +272,14 @@ directo (diferencia < 1e-6, hay test).
   orden de la placa (3,39 kHz). Es lo que hace que un fundido no se apague del todo y que los
   agudos suenen "a consola". **Limpio** suma a 14 bits y no filtra. El WAV se exporta con el modelo
   elegido; el VGM y el XGM son escrituras de registro y no dependen de él.
+- **Afinación.** Medidos sin vibrato, todos los instrumentos de voz del FM dan su nota con ±3 cents de Do2 a Do6, el PSG
+  la clava hasta Do6 y los timbales afinados caen en la tónica y la dominante de cada tonalidad (hay test,
+  [`tests/afinacion.test.ts`](tests/afinacion.test.ts)). Los parches con dos portadoras reparten su detune a los dos
+  lados (DT −1/+1) para que el coro no desplace el centro. El **vibrato** es de conjunto: todos los de voz van a
+  5,5 Hz, con el mismo retardo, como mucho ±12 cents y con la fase marcada por un reloj común, no por cada nota; la
+  profundidad entra en rampa. Así dos voces que doblan una línea (la trompeta y el PSG al unísono, un chelo a la octava
+  del órgano) oscilan juntas y no se separan más de 12 cents. Solo llevan vibrato propio los que lo usan como efecto:
+  THEREMIN, PONTICELLO, PARARRAYOS y TWINKLE.
 - SN76489: LFSR de 16 bit (variante Sega), ruido acoplado a SQ3; las notas por debajo de A2
   (periodo > 1023) se pliegan una octava arriba, como haría un compositor en hardware real.
   - **Nivel:** un canal de PSG a tope queda 10,9 dB por debajo de uno de FM, entre las dos

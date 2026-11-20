@@ -153,6 +153,8 @@ export class Synth {
 
   // ── tiempo ──
   private t = 0
+  /** frames de 60 Hz desde el arranque: reloj común de todos los vibratos */
+  private frames = 0
   private readonly frameLen: number
   private nextFrame = 0
 
@@ -255,6 +257,7 @@ export class Synth {
     this.noise = this.newPsg()
     this.playing = false
     this.t = 0
+    this.frames = 0
     this.nextFrame = 0
     this.nextStep = 0
     this.loops = 0
@@ -659,7 +662,7 @@ export class Synth {
   /** semitono instantáneo (acordes en arpegio + deslizamiento + vibrato + envolvente de pitch) */
   private fmSemi(f: FmState, p: FmPatch, age: number): number {
     const n = f.notes.length ? f.notes[age % f.notes.length] : 60
-    return n + glideOffset(f, n) + pitchOffset(p.vib, p.pitchEnv, age) / 100
+    return n + glideOffset(f, n) + pitchOffset(p.vib, p.pitchEnv, age, this.frames) / 100
   }
 
   // ── PSG / ruido ───────────────────────────────────────────────────────────
@@ -713,7 +716,7 @@ export class Synth {
 
   private psgUpdatePitch(ch: number, s: PsgState): void {
     const n = s.notes.length ? s.notes[s.age % s.notes.length] : 60
-    const semi = n + glideOffset(s, n) + (pitchOffset(s.vib, s.pitchEnv, s.age) + s.detune) / 100
+    const semi = n + glideOffset(s, n) + (pitchOffset(s.vib, s.pitchEnv, s.age, this.frames) + s.detune) / 100
     this.psgSetTone(ch, this.psgPeriodFor(semi))
   }
 
@@ -840,6 +843,7 @@ export class Synth {
   // ── frame de 60 Hz ────────────────────────────────────────────────────────
   private frameTick(): void {
     const song = this.song
+    this.frames++
     for (let c = 0; c < 6; c++) {
       const f = this.fm[c]
       if (!f.on) continue
@@ -982,12 +986,20 @@ export class Synth {
 }
 
 // ── utilidades ──────────────────────────────────────────────────────────────
-/** desviación de tono en cents por vibrato + envolvente de pitch, a `age` frames */
-export function pitchOffset(vib: Vibrato | undefined, env: PitchEnv | undefined, age: number): number {
+/** frames que tarda el vibrato en llegar a su profundidad una vez pasado el retardo */
+export const VIB_FADE = 12
+
+/**
+ * desviación de tono en cents por vibrato + envolvente de pitch, a `age` frames.
+ * La fase del vibrato la marca `clock`, el reloj de frames común a todos los canales (sin él, la edad de la nota),
+ * y la profundidad entra en rampa al acabar el retardo: así dos voces que doblan la misma nota con la misma
+ * velocidad de vibrato oscilan a la vez aunque ataquen en momentos distintos, y el doblaje no se desafina.
+ */
+export function pitchOffset(vib: Vibrato | undefined, env: PitchEnv | undefined, age: number, clock = age): number {
   let cents = 0
   if (vib && age >= vib.delay) {
-    const t = (age - vib.delay) / FRAME_HZ
-    cents += vib.depth * Math.sin(2 * Math.PI * vib.rate * t)
+    const ramp = Math.min(1, (age - vib.delay + 1) / VIB_FADE)
+    cents += vib.depth * ramp * Math.sin((2 * Math.PI * vib.rate * clock) / FRAME_HZ)
   }
   if (env && env.semis !== 0) {
     cents += env.semis * 100 * Math.exp((-3 * age) / Math.max(1, env.frames))

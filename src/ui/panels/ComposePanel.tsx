@@ -6,10 +6,12 @@ import { getPattern, patternSteps, stepsPerBar, type Note } from '../../music/so
 import { CHORDS, NOTE_NAMES, SCALES, diatonicChord, snapToScale, type ChordType, type ScaleId } from '../../music/theory'
 import { Rng } from '../../music/generator'
 import { useApp } from '../../state/store'
+import { layerIntro } from '../../music/capas'
 import { engine } from '../../engine/client'
 import { NumField, Section, Segmented } from '../controls'
 import { cx } from '../util'
 import { Icon } from '../icons'
+import { LayerBar } from './LayerBar'
 
 const FILLS: { value: FillKind; label: string }[] = [
   { value: 'bass', label: 'BAJO' },
@@ -58,10 +60,11 @@ export function ComposePanel() {
   const generate = (newSeed: number) => {
     const key = song.key
     const gen = generateSong({ style, seed: newSeed, key, bpm: bpmAuto ? undefined : bpm, bars })
+    const layers = useApp.getState().layered ? layerIntro(gen) : ''
     replaceSong(gen, { keepHistory: true })
     selectPattern(gen.patterns[0].id)
     useApp.getState().set({ dirty: true })
-    notify(`Tema ${gen.title} generado · ${gen.bpm} BPM · Ctrl+Z para deshacer`)
+    notify(`Tema ${gen.title} generado · ${gen.bpm} BPM${layers} · Ctrl+Z para deshacer`)
   }
 
   const applyFill = (s: number) => {
@@ -193,6 +196,7 @@ export function ComposePanel() {
             GENERAR TEMA
           </button>
         </div>
+        <LayerBar />
       </Section>
 
       <Section title="2 · RELLENAR LA PISTA">

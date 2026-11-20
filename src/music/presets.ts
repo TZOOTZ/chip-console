@@ -100,14 +100,14 @@ export const FM_PRESETS: FmPatch[] = [
     7,
     0,
     [op(1, 10, 31, 0, 0, 0, 9), op(2, 18, 31, 0, 0, 0, 9, 1), op(3, 23, 31, 0, 0, 0, 9), op(4, 26, 31, 0, 0, 0, 9)],
-    { vib: { delay: 14, rate: 5.5, depth: 18 } },
+    { vib: { delay: 18, rate: 5.5, depth: 12 } },
   ),
   fm(
     'SQUARE LEAD',
     7,
     0,
     [op(1, 4, 31, 0, 0, 0, 9), op(3, 17, 31, 0, 0, 0, 9), op(5, 23, 31, 0, 0, 0, 9), op(7, 27, 31, 0, 0, 0, 9)],
-    { vib: { delay: 14, rate: 5.5, depth: 18 } },
+    { vib: { delay: 18, rate: 5.5, depth: 12 } },
   ),
   fm('BRASS', 4, 4, [
     op(1, 22, 20, 6, 6, 0, 7),
@@ -120,7 +120,7 @@ export const FM_PRESETS: FmPatch[] = [
     4,
     5,
     [op(1, 38, 24, 3, 3, 0, 8), op(1, 3, 22, 3, 2, 0, 8), off(), off()],
-    { vib: { delay: 18, rate: 5, depth: 16 } },
+    { vib: { delay: 18, rate: 5.5, depth: 12 } },
   ),
   // 12 — pads
   fm('STRINGS', 5, 4, [
@@ -162,22 +162,22 @@ export const FM_PRESETS: FmPatch[] = [
     'SOLINA',
     5,
     5,
-    [op(1, 36, 18, 0, 0, 0, 6), op(1, 11, 15, 0, 0, 0, 6, 3), op(1, 22, 15, 0, 0, 0, 6, 7), op(2, 21, 14, 0, 0, 0, 6, 1)],
-    { vib: { delay: 0, rate: 5.8, depth: 6 } },
+    [op(1, 36, 18, 0, 0, 0, 6), op(1, 11, 15, 0, 0, 0, 6, 1), op(1, 22, 15, 0, 0, 0, 6, 6), op(2, 21, 14, 0, 0, 0, 6)],
+    { vib: { delay: 0, rate: 5.5, depth: 6 } },
   ),
   fm(
     'COSMIC LEAD',
     4,
     5,
-    [op(1, 34, 31, 0, 0, 0, 9), op(1, 7, 26, 0, 0, 0, 9), op(3, 40, 31, 12, 8, 0, 9), op(1, 20, 25, 0, 0, 0, 9, 3)],
-    { vib: { delay: 18, rate: 5.6, depth: 20 }, velMod: 10 },
+    [op(1, 34, 31, 0, 0, 0, 9), op(1, 7, 26, 0, 0, 0, 9, 5), op(3, 40, 31, 12, 8, 0, 9), op(1, 20, 25, 0, 0, 0, 9, 1)],
+    { vib: { delay: 18, rate: 5.5, depth: 12 }, velMod: 10 },
   ),
   // 19 — techno
   fm('TECHNO BELL', 4, 2, [
     op(7, 27, 31, 15, 15, 0, 7), // relación 7:2 → parciales inarmónicos, timbre de campana
     op(2, 8, 31, 14, 15, 0, 7),
     op(5, 33, 31, 16, 15, 0, 7),
-    op(1, 11, 31, 13, 15, 0, 7, 3),
+    op(1, 11, 31, 13, 15, 0, 7, 1),
   ]),
   fm('STAB', 4, 5, [
     op(1, 24, 31, 13, 9, 0, 10),
@@ -205,7 +205,7 @@ export const FM_PRESETS: FmPatch[] = [
     [op(1, 37, 13, 0, 0, 0, 5), op(1, 6, 13, 0, 0, 0, 4, 2, 0, 1), op(1, 15, 13, 0, 0, 0, 4, 6, 0, 1), op(3, 24, 12, 0, 0, 0, 4)],
     { ams: 2 }, // trémolo con el LFO del chip (solo si la canción lo enciende)
   ),
-  fm('THEREMIN', 4, 2, [op(1, 44, 31, 0, 0, 0, 8), op(1, 5, 16, 0, 0, 0, 6), off(), off()], { vib: { delay: 6, rate: 6.3, depth: 34 } }),
+  fm('THEREMIN', 4, 2, [op(1, 44, 31, 0, 0, 0, 8), op(1, 5, 16, 0, 0, 0, 6), off(), off()], { vib: { delay: 6, rate: 6.3, depth: 18 } }),
   // 25 — jazz: viento, cuerda pulsada, contrabajo y láminas
   // sax: dos pilas casi sostenidas; el aire del ataque es la subida lenta (AR 22-25) y la realimentación del
   // OP1 da el grano de lengüeta. La velocidad abre el timbre (velMod) como el soplo al fuerte
@@ -213,8 +213,8 @@ export const FM_PRESETS: FmPatch[] = [
     'SAX',
     4,
     6,
-    [op(1, 30, 22, 0, 0, 0, 9), op(1, 6, 25, 3, 2, 0, 9, 0, 1), op(2, 38, 20, 0, 0, 0, 9, 3), op(1, 14, 24, 3, 2, 0, 9, 5)],
-    { vib: { delay: 12, rate: 5.3, depth: 16 }, velMod: 12 },
+    [op(1, 30, 22, 0, 0, 0, 9), op(1, 6, 25, 3, 2, 0, 9, 1, 1), op(2, 38, 20, 0, 0, 0, 9), op(1, 14, 24, 3, 2, 0, 9, 5)],
+    { vib: { delay: 18, rate: 5.5, depth: 12 }, velMod: 12 },
   ),
   // guitarra de jazz: ataque de púa muy corto (modulador que cae en ~60 ms) y cuerpo hueco a la octava
   fm(
@@ -248,7 +248,7 @@ export const FM_PRESETS: FmPatch[] = [
     4,
     6,
     [op(1, 24, 19, 3, 4, 0, 8), op(1, 6, 17, 0, 0, 0, 8), op(3, 56, 19, 4, 5, 0, 8), op(2, 14, 17, 0, 0, 0, 8, 3)],
-    { vib: { delay: 15, rate: 5.8, depth: 18 } },
+    { vib: { delay: 18, rate: 5.5, depth: 12 } },
   ),
   // sección: dos portadoras desafinadas (DT +2 / −2) a 4,5 dB una de otra, para que batan sin anularse
   fm(
@@ -256,7 +256,7 @@ export const FM_PRESETS: FmPatch[] = [
     4,
     6,
     [op(1, 24, 15, 0, 0, 0, 7), op(1, 5, 14, 0, 0, 0, 7, 2), op(1, 36, 15, 0, 0, 0, 7), op(1, 20, 14, 0, 0, 0, 7, 6)],
-    { vib: { delay: 0, rate: 5.4, depth: 8 } },
+    { vib: { delay: 0, rate: 5.5, depth: 8 } },
   ),
   // pizzicato: cuerda pulsada que se apaga sola; el golpe de dedo es el modulador 4:1, que dura un instante
   fm(
@@ -287,8 +287,8 @@ export const FM_PRESETS: FmPatch[] = [
     'CELLO',
     4,
     4,
-    [op(1, 30, 19, 2, 3, 0, 7), op(1, 5, 18, 0, 0, 0, 7), op(2, 40, 20, 0, 0, 0, 7), op(1, 18, 18, 0, 0, 0, 7, 2)],
-    { vib: { delay: 18, rate: 5.2, depth: 14 }, velMod: 10 },
+    [op(1, 30, 19, 2, 3, 0, 7), op(1, 5, 18, 0, 0, 0, 7, 5), op(2, 40, 20, 0, 0, 0, 7), op(1, 18, 18, 0, 0, 0, 7, 1)],
+    { vib: { delay: 18, rate: 5.5, depth: 8 }, velMod: 10 },
   ),
   // 35 — electricidad. RAYO: cadena con el OP1 a realimentación máxima (casi ruido) y relaciones
   // inarmónicas, que cae cuatro octavas en picado. PARARRAYOS: el zumbido de la carga, un arco
@@ -313,14 +313,14 @@ export const FM_PRESETS: FmPatch[] = [
     4,
     7,
     [op(1, 26, 15, 4, 4, 0, 8), op(1, 4, 17, 2, 2, 0, 8, 1), op(1, 20, 14, 4, 3, 0, 8), op(1, 10, 17, 2, 2, 0, 8, 5)],
-    { vib: { delay: 24, rate: 5.6, depth: 12 }, velMod: 12 },
+    { vib: { delay: 18, rate: 5.5, depth: 12 }, velMod: 12 },
   ),
   fm(
     'TROMPA',
     4,
     6,
-    [op(1, 28, 15, 3, 4, 0, 7), op(1, 14, 17, 1, 2, 0, 7), op(1, 44, 14, 3, 4, 0, 7), op(1, 14, 17, 1, 2, 0, 7, 3)],
-    { vib: { delay: 30, rate: 5, depth: 8 }, velMod: 10 },
+    [op(1, 28, 15, 3, 4, 0, 7), op(1, 14, 17, 1, 2, 0, 7, 5), op(1, 44, 14, 3, 4, 0, 7), op(1, 14, 17, 1, 2, 0, 7, 1)],
+    { vib: { delay: 18, rate: 5.5, depth: 8 }, velMod: 10 },
   ),
   fm('TUBA', 4, 5, [op(1, 22, 17, 3, 4, 0, 8), op(1, 3, 20, 1, 2, 0, 8), op(1, 26, 17, 3, 4, 0, 8), op(1, 12, 20, 1, 2, 0, 8, 2)], { velMod: 10 }),
   fm('CLAVE', 4, 6, [op(1, 22, 31, 11, 15, 0, 10, 0, 1), op(1, 6, 31, 8, 15, 0, 9, 0, 1), op(1, 32, 31, 12, 15, 0, 10, 0, 1), op(2, 28, 31, 9, 15, 0, 9, 3, 1)]),
@@ -328,8 +328,8 @@ export const FM_PRESETS: FmPatch[] = [
     'OBOE',
     4,
     7,
-    [op(1, 24, 19, 2, 2, 0, 8), op(1, 14, 18, 1, 1, 0, 8), op(1, 20, 19, 2, 2, 0, 8), op(2, 4, 18, 1, 1, 0, 8, 2)],
-    { vib: { delay: 20, rate: 5.4, depth: 10 } },
+    [op(1, 24, 19, 2, 2, 0, 8), op(1, 14, 18, 1, 1, 0, 8, 1), op(1, 20, 19, 2, 2, 0, 8), op(2, 4, 18, 1, 1, 0, 8)],
+    { vib: { delay: 18, rate: 5.5, depth: 10 } },
   ),
 ]
 
@@ -345,7 +345,7 @@ const psg = (name: string, vol: number, a: number, d: number, s: number, r: numb
 })
 
 export const PSG_PRESETS: PsgInst[] = [
-  psg('LEAD', 13, 0, 0, 0, 3, { vib: { delay: 10, rate: 5.5, depth: 25 } }),
+  psg('LEAD', 13, 0, 0, 0, 3, { vib: { delay: 18, rate: 5.5, depth: 12 } }),
   psg('PLUCK', 14, 0, 12, 15, 2),
   psg('PAD', 11, 8, 0, 0, 12),
   psg('STAB', 14, 0, 5, 8, 2),

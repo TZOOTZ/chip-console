@@ -5,9 +5,11 @@ import { PIECES, generatePiece, type PieceId, type PieceMode } from '../../music
 import { getPattern } from '../../music/song'
 import { NOTE_NAMES } from '../../music/theory'
 import { useApp } from '../../state/store'
+import { layerIntro } from '../../music/capas'
 import { NumField, Section, Segmented } from '../controls'
 import { Icon } from '../icons'
 import { cx } from '../util'
+import { LayerBar } from './LayerBar'
 
 const GROUPS: FigureGroup[] = ['RETÓRICA', 'ADORNO', 'TEXTURA', 'ARTICULACIÓN']
 const MODES: { value: PieceMode; label: string; title: string }[] = [
@@ -40,10 +42,11 @@ export function ResourcesPanel() {
 
   const generate = (s: number) => {
     const gen = generatePiece({ piece, seed: s, key: song.key, mode })
+    const layers = useApp.getState().layered ? layerIntro(gen) : ''
     replaceSong(gen, { keepHistory: true })
     selectPattern(gen.patterns[0].id)
     useApp.getState().set({ dirty: true })
-    notify(`${gen.title} · ${info.meter} · ${gen.bpm} BPM · Ctrl+Z para deshacer`)
+    notify(`${gen.title} · ${info.meter} · ${gen.bpm} BPM${layers} · Ctrl+Z para deshacer`)
   }
 
   const figure = (id: FigureId) => {
@@ -95,6 +98,7 @@ export function ResourcesPanel() {
             GENERAR {info.name}
           </button>
         </div>
+        <LayerBar />
         <p className="hint">Crea un tema nuevo en lugar del actual (Ctrl+Z lo recupera).</p>
       </Section>
 

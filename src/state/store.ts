@@ -25,9 +25,11 @@ export interface Prefs {
   inspectorOpen: boolean
   /** carácter de sonido de la consola: Model 1 (DAC discreto + paso-bajo) o limpio */
   sound: SoundModel
+  /** al generar un tema o una pieza suenan primero 4 pistas y el resto entra con SIGUIENTE */
+  layered: boolean
 }
 
-const DEFAULT_PREFS: Prefs = { uiScale: 'auto', dock: 'auto', crt: true, showKeyboard: true, panelH: 230, inspectorOpen: true, sound: 'md1' }
+const DEFAULT_PREFS: Prefs = { uiScale: 'auto', dock: 'auto', crt: true, showKeyboard: true, panelH: 230, inspectorOpen: true, sound: 'md1', layered: true }
 
 function loadPrefs(): Prefs {
   const p: Prefs = { ...DEFAULT_PREFS }
@@ -40,6 +42,7 @@ function loadPrefs(): Prefs {
     if (typeof raw.panelH === 'number' && raw.panelH >= 40 && raw.panelH <= 900) p.panelH = raw.panelH
     if (typeof raw.inspectorOpen === 'boolean') p.inspectorOpen = raw.inspectorOpen
     if (raw.sound === 'md1' || raw.sound === 'clean') p.sound = raw.sound
+    if (typeof raw.layered === 'boolean') p.layered = raw.layered
   } catch {
     /* sin almacenamiento o JSON inválido: valores por defecto */
   }
@@ -48,14 +51,14 @@ function loadPrefs(): Prefs {
 
 export function savePrefs(s: Prefs): void {
   try {
-    const p: Prefs = { uiScale: s.uiScale, dock: s.dock, crt: s.crt, showKeyboard: s.showKeyboard, panelH: s.panelH, inspectorOpen: s.inspectorOpen, sound: s.sound }
+    const p: Prefs = { uiScale: s.uiScale, dock: s.dock, crt: s.crt, showKeyboard: s.showKeyboard, panelH: s.panelH, inspectorOpen: s.inspectorOpen, sound: s.sound, layered: s.layered }
     localStorage.setItem(PREFS_KEY, JSON.stringify(p))
   } catch {
     /* sin almacenamiento */
   }
 }
 
-export const PREF_KEYS: (keyof Prefs)[] = ['uiScale', 'dock', 'crt', 'showKeyboard', 'panelH', 'inspectorOpen', 'sound']
+export const PREF_KEYS: (keyof Prefs)[] = ['uiScale', 'dock', 'crt', 'showKeyboard', 'panelH', 'inspectorOpen', 'sound', 'layered']
 
 export interface ClipboardNotes {
   trackKind: string
