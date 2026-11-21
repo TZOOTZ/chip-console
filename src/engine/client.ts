@@ -25,7 +25,7 @@ class AudioEngine {
   private master: GainNode | null = null
   private starting: Promise<void> | null = null
   private pendingSong: Song | null = null
-  private model: SoundModel = 'md1'
+  private model: SoundModel = 'clean'
   private raf = 0
   private statusListeners = new Set<StatusListener>()
   private liveListeners = new Set<LiveListener>()

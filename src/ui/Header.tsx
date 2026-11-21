@@ -84,8 +84,8 @@ const DOCKS: { value: DockMode; label: string; title: string }[] = [
 ]
 
 const SOUNDS: { value: SoundModel; label: string; title: string }[] = [
+  { value: 'clean', label: 'LIMPIO', title: 'Suma ideal de los chips, sin grano ni filtro (por defecto)' },
   { value: 'md1', label: 'MODEL 1', title: 'Como la consola: DAC de 9 bits del YM2612 (grano en colas y notas suaves) y el paso-bajo de la placa' },
-  { value: 'clean', label: 'LIMPIO', title: 'Suma ideal de los chips, sin grano ni filtro' },
 ]
 
 function Settings() {
@@ -108,7 +108,7 @@ function Settings() {
       <div className="title-px">SONIDO</div>
       <div className="flex flex-col gap-1">
         <Segmented value={sound} options={SOUNDS} onChange={(v) => set({ sound: v })} fill label="Carácter de sonido" />
-        <p className="hint">{sound === 'md1' ? 'Suena como la consola: grano del DAC y agudos suavizados. También se exporta así el WAV.' : 'Sin el grano ni el filtro de la consola. El balance entre FM y PSG es el mismo.'}</p>
+        <p className="hint">{sound === 'md1' ? 'Suena como la consola: grano del DAC y agudos suavizados. También se exporta así el WAV.' : 'Sin el grano ni el filtro de la consola (por defecto). El balance entre FM y PSG es el mismo. También se exporta así el WAV.'}</p>
       </div>
       <div className="title-px">INTERFAZ</div>
       <div className="flex flex-col gap-1">

@@ -23,25 +23,30 @@ export interface Prefs {
   /** altura del inspector cuando está abajo (px de diseño, a escala 100 %) */
   panelH: number
   inspectorOpen: boolean
-  /** carácter de sonido de la consola: Model 1 (DAC discreto + paso-bajo) o limpio */
+  /** carácter de sonido de la consola: limpio (por defecto) o Model 1 (DAC discreto + paso-bajo) */
   sound: SoundModel
   /** al generar un tema o una pieza suenan primero 4 pistas y el resto entra con SIGUIENTE */
   layered: boolean
 }
 
-const DEFAULT_PREFS: Prefs = { uiScale: 'auto', dock: 'auto', crt: true, showKeyboard: true, panelH: 230, inspectorOpen: true, sound: 'md1', layered: true }
+/** versión del ajuste de sonido guardado: 2 = LIMPIO por defecto (2026-11-21) */
+const SOUND_PREFS_V = 2
 
-function loadPrefs(): Prefs {
+const DEFAULT_PREFS: Prefs = { uiScale: 'auto', dock: 'auto', crt: true, showKeyboard: true, panelH: 230, inspectorOpen: true, sound: 'clean', layered: true }
+
+export function loadPrefs(): Prefs {
   const p: Prefs = { ...DEFAULT_PREFS }
   try {
-    const raw = JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}') as Partial<Prefs>
+    const raw = JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}') as Partial<Prefs> & { soundV?: number }
     if (raw.uiScale === 'auto' || (typeof raw.uiScale === 'number' && raw.uiScale >= 0.75 && raw.uiScale <= 2.5)) p.uiScale = raw.uiScale
     if (raw.dock === 'auto' || raw.dock === 'right' || raw.dock === 'bottom') p.dock = raw.dock
     if (typeof raw.crt === 'boolean') p.crt = raw.crt
     if (typeof raw.showKeyboard === 'boolean') p.showKeyboard = raw.showKeyboard
     if (typeof raw.panelH === 'number' && raw.panelH >= 40 && raw.panelH <= 900) p.panelH = raw.panelH
     if (typeof raw.inspectorOpen === 'boolean') p.inspectorOpen = raw.inspectorOpen
-    if (raw.sound === 'md1' || raw.sound === 'clean') p.sound = raw.sound
+    // hasta SOUND_PREFS_V 2 el sonido por defecto era MODEL 1 y se guardaba aunque nadie lo eligiera: esos
+    // valores viejos no cuentan y se pasa a LIMPIO; lo elegido desde entonces se respeta
+    if ((raw.sound === 'md1' || raw.sound === 'clean') && raw.soundV === SOUND_PREFS_V) p.sound = raw.sound
     if (typeof raw.layered === 'boolean') p.layered = raw.layered
   } catch {
     /* sin almacenamiento o JSON inválido: valores por defecto */
@@ -51,7 +56,7 @@ function loadPrefs(): Prefs {
 
 export function savePrefs(s: Prefs): void {
   try {
-    const p: Prefs = { uiScale: s.uiScale, dock: s.dock, crt: s.crt, showKeyboard: s.showKeyboard, panelH: s.panelH, inspectorOpen: s.inspectorOpen, sound: s.sound, layered: s.layered }
+    const p: Prefs & { soundV: number } = { uiScale: s.uiScale, dock: s.dock, crt: s.crt, showKeyboard: s.showKeyboard, panelH: s.panelH, inspectorOpen: s.inspectorOpen, sound: s.sound, layered: s.layered, soundV: SOUND_PREFS_V }
     localStorage.setItem(PREFS_KEY, JSON.stringify(p))
   } catch {
     /* sin almacenamiento */

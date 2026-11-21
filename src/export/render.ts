@@ -11,7 +11,7 @@ export interface RenderOptions {
   tail?: number
   /** límite de seguridad (s) */
   maxSeconds?: number
-  /** carácter de sonido: 'md1' (por defecto, Model 1) o 'clean' */
+  /** carácter de sonido: 'md1' (Model 1, lo que se usa si no se dice) o 'clean'; la app pasa el ajuste del usuario, LIMPIO por defecto */
   model?: SoundModel
   onProgress?: (fraction: number) => void
 }

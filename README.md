@@ -72,7 +72,7 @@ exportado de Inkscape se conserva en [`docs/brand/logo-original.svg`](docs/brand
 
 | Área | Qué hay |
 |---|---|
-| **Sonido** | Emulación de YM2612 (8 algoritmos, envolventes AR/D1R/SL/D2R/RR con KS, DT, MUL, TL, feedback, LFO AM/PM, DAC, pan) y SN76489 (tonos, ruido blanco/periódico, atenuación de 2 dB) en un **AudioWorklet** con tiempo exacto a la muestra. Dos caracteres de sonido (**⚙ → SONIDO**): **MODEL 1** —DAC discreto de 9 bits con su escalón en el cruce por cero y el paso-bajo de la placa— o **LIMPIO**. El PSG va al nivel que tiene en la consola y sin aliasing. |
+| **Sonido** | Emulación de YM2612 (8 algoritmos, envolventes AR/D1R/SL/D2R/RR con KS, DT, MUL, TL, feedback, LFO AM/PM, DAC, pan) y SN76489 (tonos, ruido blanco/periódico, atenuación de 2 dB) en un **AudioWorklet** con tiempo exacto a la muestra. Dos caracteres de sonido (**⚙ → SONIDO**): **LIMPIO** (por defecto), la suma ideal de los chips, o **MODEL 1** —DAC discreto de 9 bits con su escalón en el cruce por cero y el paso-bajo de la placa—. El PSG va al nivel que tiene en la consola y sin aliasing. |
 | **Composición rápida** | Generador de temas en 10 estilos con semilla (ver más abajo), **mezclado por roles** (cada pista a su sonoridad medida respecto al tema) y que entra **por capas** (cuatro pistas y luego una a una); rellenar pista (bajo, acordes, arpegio, melodía, batería, percusión) en el lenguaje del estilo elegido; variar pista; progresiones y acordes diatónicos; bloqueo de escala. |
 | **Recursos** | **Piezas de juego** con su compás, su tempo y su forma: fanfarria (cuatro compases que no se repiten), maestoso (entrada con redoble y tema de dos frases), bourrée, giga en 6/8 y zarabanda en forma binaria con la repetición ornamentada, y agitato. **Figuras** sobre la selección: gradatio, anáfora, secuencia armónica, ostinato, retardo, melisma, mordente, unísono, tríada, cuatríada, cluster, legato, staccato y rubato. |
 | **Edición** | Piano roll en canvas (selección múltiple, copiar/pegar/duplicar, cuantizar, velocidad, notas fantasma), patrones + orden con bucle, 10 canales con mute/solo/volumen/pan, deshacer/rehacer, autoguardado, biblioteca local. |
@@ -294,7 +294,7 @@ directo (diferencia < 1e-6, hay test).
 - YM2612: tablas log-seno/exp y de tasas del EG, retardo de una muestra del MEM y del operador 1,
   realimentación y orden de slots S1-S3-S2-S4 como el chip. Sin SSG-EG, sin modo CH3 de 3
   frecuencias y sin temporizadores.
-- **Model 1** (por defecto): cada canal se trunca a 9 bits y pasa por el DAC discreto del YM2612, con
+- **Model 1** (en ⚙ → SONIDO; el sonido por defecto es LIMPIO desde el 21-11-2026): cada canal se trunca a 9 bits y pasa por el DAC discreto del YM2612, con
   su escalón en el cruce por cero (el *ladder effect*: +4 LSB si el canal es positivo, −3 si es
   negativo, y el signo se cuela incluso por el lado silenciado). Detrás, el paso-bajo de primer
   orden de la placa (3,39 kHz). Es lo que hace que un fundido no se apague del todo y que los
@@ -311,7 +311,8 @@ directo (diferencia < 1e-6, hay test).
 - **El grano de la Model 1.** Con el DAC de 9 bits, cada canal FM que suena añade un escalón de 7 LSB en cada cruce por
   cero, **sea cual sea su volumen**. En una pista fuerte no se nota; en una floja (un pad, un coro, una trompa de relleno)
   queda solo 18-22 dB por debajo de ella y se oye como un zumbido áspero, y con seis canales FM la suma ensucia la mezcla
-  unos 22-25 dB por debajo. Es el sonido de la consola; **⚙ → SONIDO → LIMPIO** lo quita.
+  unos 22-25 dB por debajo. Es el sonido de la consola, y por eso la app suena en **LIMPIO** por defecto; **⚙ → SONIDO →
+  MODEL 1** lo devuelve.
 - SN76489: LFSR de 16 bit (variante Sega), ruido acoplado a SQ3; las notas por debajo de A2
   (periodo > 1023) se pliegan una octava arriba, como haría un compositor en hardware real.
   - **Nivel:** un canal de PSG a tope queda 10,9 dB por debajo de uno de FM, entre las dos
