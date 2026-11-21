@@ -1,5 +1,6 @@
 // ── Estilos electrónicos: COSMIC DISCO · TECHNO MINIMAL · DARK ───────────────
 import { deflateSync, strToU8 } from 'fflate'
+import { trimFor } from '../src/music/mezcla'
 import { describe, expect, it } from 'vitest'
 import { renderDrum } from '../src/engine/drums'
 import { packSong, songFromHash, songToHash } from '../src/export/share'
@@ -368,9 +369,12 @@ describe('cosmic disco', () => {
     expect(slid).toBeGreaterThan(400)
   })
 
-  it('el PSG va escrito a nivel de consola: pistas a 100 y arpegio con el acento al máximo', () => {
+  it('el PSG va escrito a nivel de consola: pistas a 100 (menos lo que les quite la mezcla por roles) y arpegio con el acento al máximo', () => {
     const song = generateSong({ style: 'cosmic', seed: 8, key: 2 })
-    for (const id of ['sq1', 'sq2', 'sq3', 'noise']) expect(song.tracks.find((t) => t.id === id)!.vol, id).toBe(100)
+    for (const id of ['sq1', 'sq2', 'sq3', 'noise']) {
+      const t = song.tracks.find((x) => x.id === id)!
+      expect(t.vol, id).toBe(Math.max(1, Math.min(100, Math.round(100 * Math.pow(10, trimFor('cosmic', song, t) / 20)))))
+    }
     const arp = pat(song, 'A').notes.sq1 ?? []
     expect(Math.max(...arp.map((n) => n.vel))).toBe(15)
     const shaker = pat(song, 'A').notes.noise ?? []

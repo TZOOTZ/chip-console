@@ -15,6 +15,7 @@
     "test:ref": "vitest run tests/reference.test.ts --mode ref",
     "test:rom": "vitest run tests/rom.test.ts --mode rom",
     "rom:build": "node scripts/build-rom.mjs",
+    "mezcla": "vite-node scripts/medir-mezcla.ts",
     "typecheck": "tsc -b",
     "deploy": "npm run check && wrangler deploy",
     "deploy:dry": "npm run build && wrangler deploy --dry-run",

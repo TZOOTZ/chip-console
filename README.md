@@ -73,7 +73,7 @@ exportado de Inkscape se conserva en [`docs/brand/logo-original.svg`](docs/brand
 | Área | Qué hay |
 |---|---|
 | **Sonido** | Emulación de YM2612 (8 algoritmos, envolventes AR/D1R/SL/D2R/RR con KS, DT, MUL, TL, feedback, LFO AM/PM, DAC, pan) y SN76489 (tonos, ruido blanco/periódico, atenuación de 2 dB) en un **AudioWorklet** con tiempo exacto a la muestra. Dos caracteres de sonido (**⚙ → SONIDO**): **MODEL 1** —DAC discreto de 9 bits con su escalón en el cruce por cero y el paso-bajo de la placa— o **LIMPIO**. El PSG va al nivel que tiene en la consola y sin aliasing. |
-| **Composición rápida** | Generador de temas en 10 estilos con semilla (ver más abajo), que entra **por capas** (cuatro pistas y luego una a una); rellenar pista (bajo, acordes, arpegio, melodía, batería, percusión) en el lenguaje del estilo elegido; variar pista; progresiones y acordes diatónicos; bloqueo de escala. |
+| **Composición rápida** | Generador de temas en 10 estilos con semilla (ver más abajo), **mezclado por roles** (cada pista a su sonoridad medida respecto al tema) y que entra **por capas** (cuatro pistas y luego una a una); rellenar pista (bajo, acordes, arpegio, melodía, batería, percusión) en el lenguaje del estilo elegido; variar pista; progresiones y acordes diatónicos; bloqueo de escala. |
 | **Recursos** | **Piezas de juego** con su compás, su tempo y su forma: fanfarria (cuatro compases que no se repiten), maestoso (entrada con redoble y tema de dos frases), bourrée, giga en 6/8 y zarabanda en forma binaria con la repetición ornamentada, y agitato. **Figuras** sobre la selección: gradatio, anáfora, secuencia armónica, ostinato, retardo, melisma, mordente, unísono, tríada, cuatríada, cluster, legato, staccato y rubato. |
 | **Edición** | Piano roll en canvas (selección múltiple, copiar/pegar/duplicar, cuantizar, velocidad, notas fantasma), patrones + orden con bucle, 10 canales con mute/solo/volumen/pan, deshacer/rehacer, autoguardado, biblioteca local. |
 | **Expresión** | **Ligaduras y portamento**: una nota ligada (`LIGAR`, tecla B) no vuelve a atacar y, con el `GLIDE` de la pista, el tono se desliza hasta ella. **Panorama nota a nota** (L/C/R) en FM y batería. **La velocidad abre el timbre**, no solo el volumen (`VEL→T` del parche). `GATE` por pista. Todo son escrituras de registro: viaja al VGM y al XGM. |
@@ -173,6 +173,32 @@ segunda voz), la percusión de ruido y los colores del PSG. **TODAS** las abre d
 Todo es mute de pista ([`src/music/capas.ts`](src/music/capas.ts)): Ctrl+Z vuelve a callar la última pista, los
 botones **M** de los canales siguen mandando, lo que está en espera no se exporta y el enlace guarda qué pistas esperan.
 
+## Mezcla por roles
+
+Cada pista de un tema generado tiene un **rol** y cada rol una sonoridad objetivo respecto al tema, medida pista a pista
+en LUFS (ITU-R BS.1770, que pesa los agudos como el oído y no como el RMS):
+
+| Rol | Objetivo | Ejemplos |
+|---|---|---|
+| Tema | 0 LU | lead, trompeta, oboe, violín solista |
+| Bajo · batería | −3 | bajo, chelos, tuba; batería de los estilos de baile |
+| Segunda voz | −7 | trompeta II en terceras, voz 2, vibráfono, el ostinato de la tormenta |
+| Percusión de orquesta | −8 | timbales, pandereta, bodhrán |
+| Armonía (cada voz) | −11 | cuerdas, coro, órgano, teclados: las tres voces juntas quedan unos 5 LU por debajo del tema |
+| Color · doblaje | −13 | arpegios y brillos del PSG; una pista que dobla la melodía al unísono o a la octava |
+| Eco · ruido | −15 · −16 | el eco del PSG, charles y lluvia del canal de ruido |
+
+En los estilos de baile mandan el bombo y el bajo: en TECHNO MINIMAL y HOUSE la batería va a −1 y el bajo a −2, y en
+TZOOTZ ERA y DARK la batería a −2. Como el instrumento del tema cambia con la semilla (trompa o trompeta en el maestoso,
+oboe o clave en la bourrée, campana o theremin en DARK) y unos suenan más que otros, la tabla distingue también eso.
+
+La tabla [`src/music/mezcla-tabla.ts`](src/music/mezcla-tabla.ts) dice cuántos dB mover el volumen de cada pista de cada
+estilo y pieza (por pista e instrumento, porque las variantes cambian de instrumento) para llegar a su objetivo; se
+aplica al generar. La mide `npm run mezcla` ([`scripts/medir-mezcla.ts`](scripts/medir-mezcla.ts)): genera cinco temas de
+cada estilo (40 s de su tramo más denso, con el tema sonando) y ocho de cada pieza (enteras), mide cada pista sola y
+comprueba el resultado con otras semillas: nada queda más de 2,5 LU por encima de su objetivo. Hay que volver a
+pasarla si cambia un parche o un arreglo. Con esto, cuando una capa entra, se coloca detrás del tema en vez de taparlo.
+
 ## Importar MIDI y VGM
 
 **CANCIÓN → IMPORTAR…** o arrastrar el archivo sobre la ventana. El tipo se reconoce por el contenido (`.json`, `.mid`, `.vgm`, `.vgz`) y el
@@ -245,8 +271,10 @@ src/music/     Modelo y teoría
   piezas.ts      PIEZAS DE JUEGO: fanfarria, maestoso, bourrée, giga, zarabanda, agitato; contrapunto del bajo
   figuras.ts     FIGURAS sobre la selección: retórica, adorno, textura y articulación
   capas.ts       generar por capas: orden de entrada de las pistas, primera capa, SIGUIENTE y TODAS
+  mezcla.ts      mezcla por roles: rol de cada pista, objetivo en LU y la tabla medida (mezcla-tabla.ts)
 src/import/    importar MIDI (midi.ts) y VGM (vgm.ts, con vgmParse.ts, ymTrack.ts, psgTrack.ts y la rejilla de tempo grid.ts); patterns.ts trocea en patrones
 src/export/    render offline, WAV, MIDI, VGM (+lector), XGM, compartir, worker
+  loudness.ts    sonoridad integrada BS.1770 (LUFS)   medirMezcla.ts  cada pista sola frente al tema
   escopo.ts      qué se exporta: canción, patrón seleccionado o cada patrón (patternSong, nombres de archivo)
   xgc.ts         compilador XGM → XGC (lo que lee el driver del Z80)   rom.ts  montaje de la ROM
 rom/           la ROM reproductora: fuente en C para SGDK (player/) y el binario que usa la app (player.bin)
@@ -280,6 +308,10 @@ directo (diferencia < 1e-6, hay test).
   profundidad entra en rampa. Así dos voces que doblan una línea (la trompeta y el PSG al unísono, un chelo a la octava
   del órgano) oscilan juntas y no se separan más de 12 cents. Solo llevan vibrato propio los que lo usan como efecto:
   THEREMIN, PONTICELLO, PARARRAYOS y TWINKLE.
+- **El grano de la Model 1.** Con el DAC de 9 bits, cada canal FM que suena añade un escalón de 7 LSB en cada cruce por
+  cero, **sea cual sea su volumen**. En una pista fuerte no se nota; en una floja (un pad, un coro, una trompa de relleno)
+  queda solo 18-22 dB por debajo de ella y se oye como un zumbido áspero, y con seis canales FM la suma ensucia la mezcla
+  unos 22-25 dB por debajo. Es el sonido de la consola; **⚙ → SONIDO → LIMPIO** lo quita.
 - SN76489: LFSR de 16 bit (variante Sega), ruido acoplado a SQ3; las notas por debajo de A2
   (periodo > 1023) se pliegan una octava arriba, como haría un compositor en hardware real.
   - **Nivel:** un canal de PSG a tope queda 10,9 dB por debajo de uno de FM, entre las dos
@@ -345,6 +377,7 @@ npm run check      # lint, tests y build: lo mismo que el CI, y npm run deploy n
 npm run test:ref   # contraste con un reproductor VGM independiente (libgme; necesita ffmpeg en el PATH)
 npm run test:rom   # XGC contra xgmtool y la ROM sonando en MAME (necesita SGDK y MAME; ver rom/README.md)
 npm run rom:build  # recompila la ROM reproductora (necesita SGDK y Java)
+npm run mezcla     # vuelve a medir la mezcla por roles de cada estilo y pieza y reescribe src/music/mezcla-tabla.ts
 npm run lint
 npm run build      # tsc -b + vite build → dist/
 ```

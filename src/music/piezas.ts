@@ -13,6 +13,7 @@
 // voces contra la melodía (sin quintas ni octavas paralelas, consonancia en las partes fuertes,
 // notas de paso solo por grados).
 import { mordent } from './figuras'
+import { applyMix } from './mezcla'
 import { addSection, dv, makeEnv, padVoices, setupTracks, type Env, type Harm } from './electrokit'
 import { FM, NZ, PSG, Rng, put, type NoteRec } from './genkit'
 import { createEmptySong } from './presets'
@@ -1041,5 +1042,6 @@ export function generatePiece(o: PieceOptions): Song {
   BUILD[info.id](ctx, o.mode ?? 'auto')
   song.scale = ctx.minor ? 'minor' : 'major'
   env.scale = (ctx.minor ? NAT : MAJ).slice()
+  applyMix(song, info.id)
   return song
 }

@@ -17,6 +17,7 @@
 //   swing      jazz con swing: bajo andante, guitarra, ride y escobillas (jazz.ts)
 //   storm      TORMENTA: cuerdas en menor (violín, spiccato, chelos, timbales) y el pararrayos (tormenta.ts)
 import { ELECTRO_BPM, electroTrackNotes, generateElectro, isElectro, type ElectroStyle } from './electro'
+import { applyMix } from './mezcla'
 import {
   DR,
   FM,
@@ -755,6 +756,7 @@ const nativePsg = (style: StyleId): boolean => style === 'cosmic' || style === '
 export function generateSong(opts: GenOptions): Song {
   const song = composeSong(opts)
   if (!nativePsg(opts.style)) psgToHardware(song)
+  applyMix(song, opts.style)
   return song
 }
 
